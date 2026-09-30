@@ -91,6 +91,9 @@ struct Input {
 	InputUserFunc user;
 };
 #else
+/* The original record is byte-packed: 51 bytes under Watcom, where the
+ * one-byte MouseUsage enum is followed directly by var1, and 54 under MSVC. */
+#include <landru/pshpack1.h>
 struct Input {
 	uint32_t type;
 	Input* next;
@@ -109,6 +112,8 @@ struct Input {
 	InputUpdateFunc update;
 	InputUserFunc user;
 };
+
+#include <landru/poppack.h>
 #endif
 
 /* 25-byte resource header from LFD input records.
@@ -147,7 +152,7 @@ extern int16_t zinput_build_gbl;
 void xinput_Create_Input_Module(void);
 void xinput_Destroy_Input_Module(void);
 #ifndef LANDRU_GAME_XW
-bool xinput_Create_Input_Type(uint32_t type, void* create_handler, void* free_handler);
+LandruBoolResult xinput_Create_Input_Type(uint32_t type, void* create_handler, void* free_handler);
 void xinput_Destroy_Input_Type(uint32_t type);
 InputType* xinput_Find_Input_Type(uint32_t type);
 void xinput_Set_Active_Input_List(Input* input);

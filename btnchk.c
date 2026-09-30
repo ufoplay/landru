@@ -1,11 +1,10 @@
-#include <stdlib.h>
 #include <string.h>
 
 #include <landru/btnchk.h>
 #include <landru/dirty.h>
 #include <landru/font.h>
 #include <landru/inpattr.h>
-#include <landru/memptr.h>
+#include <landru/memhdl.h>
 #include <landru/paint.h>
 #include <landru/rect.h>
 #include <landru/remap.h>
@@ -66,8 +65,8 @@ CheckButton* xbtnchk_Alloc_Check_Button(Input* parent, Rect* frame, int16_t zinp
 
 int16_t xbtnchk_Free_Check_Button(CheckButton* btn) {
 	if (btn->name) {
-		free(btn->name);
-		btn->name = NULL;
+		xmemhdl_Free_Handle(btn->name);
+		btn->name = LANDRU_NULL_HANDLE;
 	}
 	return 1;
 }
@@ -79,10 +78,16 @@ void xbtnchk_Init_Check_Button(CheckButton* btn, InputUserFunc callback, const c
 	btn->header.mouseUsage = downMoveUpInput;
 	btn->header.id = id;
 
-	if (name) {
-		btn->name = xmemptr_Duplicate_String(name);
+	int16_t size = name ? (int16_t)(strlen(name) + 1) : 0;
+	if (size) {
+		LandruHandle handle = xmemhdl_Alloc_Handle(size, 0);
+		if (handle) {
+			memcpy(xmemhdl_Lock_Handle(handle), name, size);
+			xmemhdl_Unlock_Handle(handle);
+		}
+		btn->name = handle;
 	} else {
-		btn->name = NULL;
+		btn->name = LANDRU_NULL_HANDLE;
 	}
 
 	btn->state = 0;
@@ -118,7 +123,9 @@ void xbtnchk_idraw_Check_Button(Input* input, Rect* paint_rect, Rect* dirty_rect
 	if (btn->name) {
 		int16_t h = paint_rect->bottom - paint_rect->top;
 		int16_t text_y = paint_rect->top + ((h - xfont_Get_FontID_Height(0)) >> 1);
-		xfont_Print_Clipped_Text(btn->name, paint_rect->left + 16, text_y, 0, btn->text_color);
+		xfont_Print_Clipped_Text((const char*)xmemhdl_Lock_Handle(btn->name), paint_rect->left + 16, text_y,
+								 0, btn->text_color);
+		xmemhdl_Unlock_Handle(btn->name);
 	}
 
 	if (xinpattr_Is_Input_Dirty(&btn->header))
@@ -155,16 +162,25 @@ int16_t xbtnchk_iupdate_Check_Button(Input* input, Rect* paint_rect, Rect* clip,
 }
 
 void xbtnchk_Set_Check_Button_Name(CheckButton* btn, const char* name) {
-	free(btn->name);
-	btn->name = xmemptr_Duplicate_String(name);
+	int16_t size = name ? (int16_t)(strlen(name) + 1) : 0;
+	if (xmemhdl_Resize_Handle(&btn->name, size, 0) && btn->name) {
+		char* dst = (char*)xmemhdl_Lock_Handle(btn->name);
+		if (name)
+			strcpy(dst, name);
+		else
+			*dst = '\0';
+		xmemhdl_Unlock_Handle(btn->name);
+	}
 	xinpattr_Refresh_Input(&btn->header);
 }
 
 void xbtnchk_Get_Check_Button_Name(CheckButton* btn, char* out) {
-	if (btn->name)
-		strcpy(out, btn->name);
-	else
+	if (btn->name) {
+		strcpy(out, (const char*)xmemhdl_Lock_Handle(btn->name));
+		xmemhdl_Unlock_Handle(btn->name);
+	} else {
 		*out = '\0';
+	}
 }
 
 void xbtnchk_Set_Check_Button_State(CheckButton* btn, int16_t state) {

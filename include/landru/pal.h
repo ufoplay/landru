@@ -25,9 +25,10 @@ typedef struct {
 
 typedef struct Palette Palette;
 
+#include <landru/pshpack1.h>
 struct Palette {
 	uint32_t res_type;
-	uint8_t res_name[8];
+	uint8_t res_name[LANDRU_RECORD_NAME_CAPACITY];
 	Palette* next;
 	LandruHandle colors;
 	CycleStruct cycles[4];
@@ -43,6 +44,8 @@ struct Palette {
 	void* varptr;
 	LandruHandle varhdl;
 };
+
+#include <landru/poppack.h>
 
 void xpal_Set_VGA_Palette(RGBStruct* pal, int16_t start, int16_t len);
 void xpal_Create_Palette_Module(void);
@@ -100,7 +103,7 @@ void xpal_Set_Dest_Palette(Palette* pal);
 bool xpal_Compare_Dest_Palette(Palette* pal);
 void xpal_Set_Dest_Pal_Color(int16_t start, int16_t end, uint8_t r, uint8_t g, uint8_t b);
 bool xpal_Compare_Dest_Pal_Color(int16_t start, int16_t end, uint8_t r, uint8_t g, uint8_t b);
-bool xpal_Compare_Src_Dest_Palette(void);
+LandruBoolResult xpal_Compare_Src_Dest_Palette(void);
 void xpal_Build_Fade_Palette(int16_t type, int16_t start, int16_t stop, int16_t step, int16_t fr, int16_t fg,
 							 int16_t fb);
 void xpal_Build_Palette_To_Palette(int16_t start, int16_t stop, int16_t step);

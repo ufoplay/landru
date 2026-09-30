@@ -531,7 +531,7 @@ void xio_Set_System_Speed(LandruSystemSpeed speed) { system_speed_gbl = speed; }
 
 bool xio_Is_System_Fast_Enough(uint8_t level) { return system_speed_gbl >= level; }
 
-LandruBoolResult xio_Is_System_Slower_Than(LandruSystemSpeed speed) { return system_speed_gbl < speed; }
+int16_t xio_Is_System_Slower_Than(LandruSystemSpeed speed) { return system_speed_gbl < speed; }
 
 /* --- DOS-specific key functions --- */
 

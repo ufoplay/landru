@@ -16,7 +16,7 @@ void xerror_Clear_Landru_Exit(void);
 int16_t xerror_Get_Landru_Exit(void);
 void xerror_Set_Landru_Exit(int16_t code);
 LandruBoolResult xerror_Is_Landru_Exit(void);
-bool xerror_Is_Landru_Running(void);
+LandruBoolResult xerror_Is_Landru_Running(void);
 
 void xerror_Clear_Landru_Escape(void);
 int16_t xerror_Do_Landru_Escape(void);

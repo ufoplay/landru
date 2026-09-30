@@ -108,7 +108,7 @@ void xdirty_Max_Dirty_List(void) {
 	master_rect_used_gbl[cur_dirty_list_gbl] = 1;
 }
 
-int xdirty_Dirty_Rect(Rect* r) {
+int16_t xdirty_Dirty_Rect(Rect* r) {
 	if (master_rect_used_gbl[cur_dirty_list_gbl])
 		return 0;
 	if (xrect_Empty_Rect(r))
@@ -206,7 +206,7 @@ void xdirty_Prepare_Dirty_List(void) {
 	cur_working_rect_gbl = 0;
 }
 
-int xdirty_Next_Dirty_Rect(Rect* dst) {
+int16_t xdirty_Next_Dirty_Rect(Rect* dst) {
 	if (cur_working_rect_gbl >= num_working_rects_gbl) {
 		cur_dirty_list_gbl ^= 1;
 		if (disable_dirty_lists_gbl) {

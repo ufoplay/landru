@@ -107,10 +107,10 @@ static uint8_t wait_cursor[16][16] = {
 void xcursor_Create_Cursor_Module(void) {
 	Rect rect;
 
-	xbitmap_Alloc_Trans_System_Bitmap(&cursor_bm_gbl, 32, 32);
-	xbitmap_Alloc_System_Bitmap(&cursor_back_gbl, 32, 32);
-	xbitmap_Erase_Bitmap(&cursor_bm_gbl);
-	xbitmap_Erase_Bitmap(&cursor_back_gbl);
+	xbm_Alloc_Trans_System_Bitmap(&cursor_bm_gbl, 32, 32);
+	xbm_Alloc_System_Bitmap(&cursor_back_gbl, 32, 32);
+	xbm_Erase_Bitmap(&cursor_bm_gbl);
+	xbm_Erase_Bitmap(&cursor_back_gbl);
 	cursor_enable_gbl = 1;
 	cursor_show_gbl = 0;
 #ifdef LANDRU_GAME_XW
@@ -125,8 +125,8 @@ void xcursor_Create_Cursor_Module(void) {
 	last_curs_x = xio_Mouse_X();
 	last_curs_y = xio_Mouse_Y();
 	xrect_Set_Rect(&rect, 0, 0, 16, 16);
-	xbitmap_Set_Bitmap_Clipping(&cursor_bm_gbl, &rect);
-	xbitmap_Set_Bitmap_Clipping(&cursor_back_gbl, &rect);
+	xbm_Set_Bitmap_Clipping(&cursor_bm_gbl, &rect);
+	xbm_Set_Bitmap_Clipping(&cursor_back_gbl, &rect);
 	cursor_module_gbl = true;
 	xcursor_Set_Cursor(2);
 }
@@ -140,8 +140,8 @@ void xcursor_Destroy_Cursor_Module(void) {
 	cursor_actor_height = 0;
 #endif
 	if (cursor_module_gbl) {
-		xbitmap_Free_Bitmap(&cursor_bm_gbl);
-		xbitmap_Free_Bitmap(&cursor_back_gbl);
+		xbm_Free_Bitmap(&cursor_bm_gbl);
+		xbm_Free_Bitmap(&cursor_back_gbl);
 		cursor_module_gbl = false;
 	}
 }
@@ -224,7 +224,7 @@ void xcursor_Set_Cursor(uint8_t cursorId) {
 	else if (cursorId == 1)
 		cursor = (uint8_t*)wait_cursor;
 
-	dst = xbitmap_Lock_Bitmap(&cursor_bm_gbl);
+	dst = xbm_Lock_Bitmap(&cursor_bm_gbl);
 	for (y = 0; y < 32; y++) {
 		int x;
 
@@ -233,7 +233,7 @@ void xcursor_Set_Cursor(uint8_t cursorId) {
 				dst[x + y * 32] = cursor ? cursor[x + y * 16] : 0;
 		}
 	}
-	xbitmap_Unlock_Bitmap(&cursor_bm_gbl);
+	xbm_Unlock_Bitmap(&cursor_bm_gbl);
 }
 
 #endif
@@ -358,7 +358,7 @@ void xcursor_Cursor_From_Fade(void) {
 	}
 }
 
-bool xcursor_Is_Cursor(void) { return cursor_enable_gbl == 1; }
+LandruBoolResult xcursor_Is_Cursor(void) { return cursor_enable_gbl == 1; }
 
 LandruBoolResult xcursor_Is_Cursor_Visible(void) { return cursor_show_gbl == 0; }
 

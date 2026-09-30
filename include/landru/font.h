@@ -98,7 +98,7 @@ void xfont_Get_String_Rect(const char* text, Rect* outRect);
 void xfont_Allign_String_In_Rect(const char* text, Rect* parentRect, uint8_t xAlign, uint8_t yAlign);
 void xfont_Draw_Text(const char* text);
 void xfont_Draw_Font_Text(const char* text, uint8_t* widthArray, uint8_t* fontData);
-void xfont_Print_Centered_Text(const char* str, Rect* r, int16_t color, int16_t font_id);
+void xfont_Print_Centered_Text(const char* str, Rect* r, int16_t font_id, int16_t color);
 void xfont_Print_Clipped_Text(const char* str, int16_t x, int16_t y, int16_t font_id, int16_t color);
 int16_t xfont_Draw_Clipped_Text(const char* str);
 void xfont_Draw_Alligned_Text(const char* str, Rect* r, uint8_t halign, uint8_t valign);

@@ -63,7 +63,7 @@ static void clear_canvas_rect(const Rect* rect) {
 }
 
 static void bind_pixels(uint8_t* pixels, int16_t width, int16_t height, const Rect* raster_clip) {
-	xbitmap_Init_Bitmap(&drawing_bitmap);
+	xbm_Init_Bitmap(&drawing_bitmap);
 	drawing_bitmap.data = pixels;
 	drawing_bitmap.w = width;
 	drawing_bitmap.h = height;
@@ -88,15 +88,15 @@ void xcanvas_Create_Canvas_Module(void) {
 #else
 void xcanvas_Create_Canvas_Module(int16_t buffSize, int16_t width, int16_t height, bool diff) {
 #endif
-	xbitmap_Init_Bitmap(&screen_bm_gbl);
-	xbitmap_Alloc_System_Bitmap(&screen_bm_gbl, width, height);
+	xbm_Init_Bitmap(&screen_bm_gbl);
+	xbm_Alloc_System_Bitmap(&screen_bm_gbl, width, height);
 #ifdef LANDRU_GAME_XW
-	xbitmap_Erase_Bitmap(&screen_bm_gbl);
+	xbm_Erase_Bitmap(&screen_bm_gbl);
 #endif
 
 	if (diff) {
-		xbitmap_Init_Bitmap(&diff_bm_gbl);
-		diff_exists_gbl = xbitmap_Alloc_System_Bitmap(&diff_bm_gbl, width, height) != 0;
+		xbm_Init_Bitmap(&diff_bm_gbl);
+		diff_exists_gbl = xbm_Alloc_System_Bitmap(&diff_bm_gbl, width, height) != 0;
 		diff_used_gbl = diff_exists_gbl;
 	} else {
 		diff_exists_gbl = false;
@@ -111,7 +111,7 @@ void xcanvas_Create_Canvas_Module(int16_t buffSize, int16_t width, int16_t heigh
 		buff_size_gbl = 0;
 	}
 
-	xbitmap_Init_Bitmap(&buff_bm_gbl);
+	xbm_Init_Bitmap(&buff_bm_gbl);
 	buff_bm_gbl.data = buff_gbl;
 	diff_valid_gbl = false;
 	canvas_bm_gbl = &screen_bm_gbl;
@@ -125,9 +125,9 @@ void xcanvas_Destroy_Canvas_Module(void) {
 		return;
 
 	free(buff_gbl);
-	xbitmap_Free_Bitmap(&screen_bm_gbl);
+	xbm_Free_Bitmap(&screen_bm_gbl);
 	if (diff_exists_gbl) {
-		xbitmap_Free_Bitmap(&diff_bm_gbl);
+		xbm_Free_Bitmap(&diff_bm_gbl);
 	}
 	canvas_module_gbl = false;
 	buff_gbl = NULL;
@@ -241,7 +241,7 @@ void xcanvas_Pop_Canvas(uint8_t* previous_pixels, Rect* previous_raster_clip, in
 	bind_pixels(previous_pixels, previous_width, previous_height, previous_raster_clip);
 }
 
-uint8_t* xcanvas_Get_Screen_Buffer(void) { return xbitmap_Lock_Bitmap(&screen_bm_gbl); }
+uint8_t* xcanvas_Get_Screen_Buffer(void) { return xbm_Lock_Bitmap(&screen_bm_gbl); }
 
 uint8_t* xcanvas_Get_Draw_Buffer(void) { return draw_buff_gbl; }
 
@@ -267,7 +267,7 @@ bool xcanvas_Push_Buffer_Canvas(int16_t width, int16_t height) {
 		return false;
 	buff_bm_gbl.w = width;
 	buff_bm_gbl.h = height;
-	xbitmap_Max_Bitmap_Clipping(&buff_bm_gbl);
+	xbm_Max_Bitmap_Clipping(&buff_bm_gbl);
 	return xcanvas_Push_Bitmap_Canvas(&buff_bm_gbl);
 }
 
@@ -323,13 +323,13 @@ void xcanvas_Set_Drawing_Canvas(void) { xcanvas_Set_Drawing_Canvas_Bitmap(canvas
 void xcanvas_Set_Drawing_Canvas_Bitmap(BitmapStruct* bitmap) {
 	int16_t width = bitmap->w;
 	int16_t height = bitmap->h;
-	void* ptr = xbitmap_Lock_Bitmap(bitmap);
+	void* ptr = xbm_Lock_Bitmap(bitmap);
 	if (ptr) {
 		draw_buff_gbl = ptr;
 		draw_w_gbl = width;
 		draw_h_gbl = height;
 	}
-	xbitmap_Unlock_Bitmap(bitmap);
+	xbm_Unlock_Bitmap(bitmap);
 #ifdef LANDRU_GAME_XW
 	drawing_bitmap = *bitmap;
 	drawing_bitmap.data = ptr;
@@ -400,11 +400,11 @@ void xcanvas_Max_Drawing_Canvas_Clip(void) {
 	xcanvas_Set_Drawing_Canvas_Clip(&clip);
 }
 
-bool xcanvas_Clip_Rect_To_Canvas(Rect* rect) {
+LandruBoolResult xcanvas_Clip_Rect_To_Canvas(Rect* rect) {
 #ifdef LANDRU_GAME_XW
 	return xrect_Clip_Rect(rect, &canvas_bounds);
 #else
-	return xbitmap_Clip_Rect_To_Bitmap(draw_bm_gbl, rect);
+	return xbm_Clip_Rect_To_Bitmap(draw_bm_gbl, rect);
 #endif
 }
 
@@ -419,11 +419,13 @@ void xcanvas_Invalid_Screen_Diff(void) { diff_valid_gbl = false; }
 
 void xcanvas_Valid_Screen_Diff(void) { diff_valid_gbl = diff_used_gbl; }
 
-bool xcanvas_Is_Screen_Diff(void) { return diff_exists_gbl; }
+LandruBoolResult xcanvas_Is_Screen_Diff(void) { return diff_exists_gbl; }
 
-bool xcanvas_Is_Screen_Diff_Used(void) { return diff_used_gbl && diff_exists_gbl; }
+LandruBoolResult xcanvas_Is_Screen_Diff_Used(void) { return diff_used_gbl && diff_exists_gbl; }
 
-bool xcanvas_Is_Screen_Diff_Valid(void) { return diff_valid_gbl && diff_used_gbl && diff_exists_gbl; }
+LandruBoolResult xcanvas_Is_Screen_Diff_Valid(void) {
+	return diff_valid_gbl && diff_used_gbl && diff_exists_gbl;
+}
 
 #ifdef LANDRU_GAME_XW
 static void copy_from_buffer(const uint8_t* buffer, int16_t screen_x, int16_t screen_y, int16_t buffer_x,
@@ -521,7 +523,7 @@ int16_t xcanvas_Scroll_Clipped_Buffer(uint8_t* pixels, const Rect* clip, int16_t
 static void copy_diff_region(int16_t x, int16_t y, int16_t width, int16_t height, bool restore) {
 	if (!diff_exists_gbl)
 		return;
-	uint8_t* pixels = xbitmap_Lock_Bitmap(&diff_bm_gbl);
+	uint8_t* pixels = xbm_Lock_Bitmap(&diff_bm_gbl);
 	int16_t stride = canvas_bounds.right - canvas_bounds.left;
 	int16_t row = y;
 	int16_t rows = height;
@@ -542,7 +544,7 @@ static void copy_diff_region(int16_t x, int16_t y, int16_t width, int16_t height
 		else
 			copy_to_buffer(lower, x, row, x, row - LANDRU_DIFF_SPLIT_ROWS, width, rows, stride);
 	}
-	xbitmap_Unlock_Bitmap(&diff_bm_gbl);
+	xbm_Unlock_Bitmap(&diff_bm_gbl);
 }
 
 void xcanvas_Copy_Screen_Portion_To_Diff(int16_t x, int16_t y, int16_t width, int16_t height) {
@@ -565,28 +567,28 @@ void xcanvas_Copy_Screen_To_Diff(void) {
 	BitmapStruct* screen = xsurface_Get_Active_Render_Bitmap();
 	BitmapStruct* diff = xsurface_Get_Active_Diff_Bitmap();
 	if (screen && diff)
-		xbitmap_Copy_Bitmap(diff, screen, 0, 0);
+		xbm_Copy_Bitmap(diff, screen, 0, 0);
 }
 
 void xcanvas_Copy_Screen_Portion_To_Diff(Rect* rect) {
 	BitmapStruct* screen = xsurface_Get_Active_Render_Bitmap();
 	BitmapStruct* diff = xsurface_Get_Active_Diff_Bitmap();
 	if (screen && diff)
-		xbitmap_Copy_Bitmap_Portion(diff, screen, rect, rect->left, rect->top);
+		xbm_Copy_Bitmap_Portion(diff, screen, rect, rect->left, rect->top);
 }
 
 void xcanvas_Copy_Diff_To_Screen(void) {
 	BitmapStruct* screen = xsurface_Get_Active_Render_Bitmap();
 	BitmapStruct* diff = xsurface_Get_Active_Diff_Bitmap();
 	if (screen && diff)
-		xbitmap_Copy_Bitmap(screen, diff, 0, 0);
+		xbm_Copy_Bitmap(screen, diff, 0, 0);
 }
 
 void xcanvas_Copy_Diff_Portion_To_Screen(Rect* rect) {
 	BitmapStruct* screen = xsurface_Get_Active_Render_Bitmap();
 	BitmapStruct* diff = xsurface_Get_Active_Diff_Bitmap();
 	if (screen && diff)
-		xbitmap_Copy_Bitmap_Portion(screen, diff, rect, rect->left, rect->top);
+		xbm_Copy_Bitmap_Portion(screen, diff, rect, rect->left, rect->top);
 }
 
 #endif
@@ -625,7 +627,7 @@ static void copy_screen_region_to_video(Rect* rect, bool use_diff) {
 	} else {
 		xvesa_Copy_Bitmap_Portion_To_Video(screen, rect, rect->left, rect->top);
 		if (use_diff && diff_used_gbl && diff)
-			xbitmap_Copy_Bitmap_Portion(diff, screen, rect, rect->left, rect->top);
+			xbm_Copy_Bitmap_Portion(diff, screen, rect, rect->left, rect->top);
 	}
 #endif
 }
@@ -639,8 +641,8 @@ void xcanvas_Copy_Screen_To_Video(Rect* rect) {
 	BitmapStruct* screen = xsurface_Get_Active_Render_Bitmap();
 	if (!screen)
 		return;
-	xbitmap_Max_Bitmap_Clipping(screen);
-	xbitmap_Clip_Rect_To_Bitmap(screen, &clipped);
+	xbm_Max_Bitmap_Clipping(screen);
+	xbm_Clip_Rect_To_Bitmap(screen, &clipped);
 #endif
 	copy_screen_region_to_video(&clipped, true);
 }
@@ -674,7 +676,7 @@ void xcanvas_Copy_Screen_Portion_To_Video(Rect* rect, int16_t x, int16_t y) {
 		return;
 	xvesa_Copy_Bitmap_Portion_To_Video(screen, rect, x, y);
 	if (diff)
-		xbitmap_Copy_Bitmap_Portion(diff, screen, rect, rect->left, rect->top);
+		xbm_Copy_Bitmap_Portion(diff, screen, rect, rect->left, rect->top);
 }
 
 #endif
@@ -700,7 +702,7 @@ void xcanvas_Erase_Canvas(void) {
 #ifdef LANDRU_GAME_XW
 	clear_canvas_rect(&stored_clip);
 #else
-	xbitmap_Erase_Bitmap(draw_bm_gbl);
+	xbm_Erase_Bitmap(draw_bm_gbl);
 #endif
 }
 
@@ -710,7 +712,7 @@ void xcanvas_Erase_Canvas_Rect(Rect* rect) {
 		clear_canvas_rect(rect);
 #else
 	Rect saved_clip = draw_bm_gbl->clip;
-	xbitmap_Max_Bitmap_Clipping(draw_bm_gbl);
+	xbm_Max_Bitmap_Clipping(draw_bm_gbl);
 	xcanvas_Set_Drawing_Canvas_Clip(&draw_bm_gbl->clip);
 	int16_t color = xremap_Get_Remap(REMAP_GRAY_0);
 	xpaint_Paint_Clipped_Rect(rect, color);
@@ -723,17 +725,17 @@ void xcanvas_Erase_Canvas_Rect(Rect* rect) {
 }
 
 void xcanvas_Copy_Bitmap_To_Canvas(BitmapStruct* bitmap, int16_t x, int16_t y) {
-	xbitmap_Copy_Bitmap(draw_bm_gbl, bitmap, x, y);
+	xbm_Copy_Bitmap(draw_bm_gbl, bitmap, x, y);
 }
 
 void xcanvas_Copy_Bitmap_Clip_To_Canvas(BitmapStruct* bitmap, int16_t x, int16_t y) {
-	xbitmap_Copy_Bitmap_Clip(draw_bm_gbl, bitmap, x, y);
+	xbm_Copy_Bitmap_Clip(draw_bm_gbl, bitmap, x, y);
 }
 
 void xcanvas_Copy_Bitmap_Portion_To_Canvas(BitmapStruct* bitmap, Rect* rect, int16_t x, int16_t y) {
-	xbitmap_Copy_Bitmap_Portion(draw_bm_gbl, bitmap, rect, x, y);
+	xbm_Copy_Bitmap_Portion(draw_bm_gbl, bitmap, rect, x, y);
 }
 
 void xcanvas_Copy_Canvas_Portion_To_Bitmap(BitmapStruct* bitmap, Rect* rect, int16_t x, int16_t y) {
-	xbitmap_Copy_Bitmap_Portion(bitmap, draw_bm_gbl, rect, x, y);
+	xbm_Copy_Bitmap_Portion(bitmap, draw_bm_gbl, rect, x, y);
 }

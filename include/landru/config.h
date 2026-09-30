@@ -12,12 +12,15 @@
 #define LANDRU_GAME_TIE
 #endif
 
-#ifdef LANDRU_GAME_XW
+/* Landru's boolean results are 16-bit words in every original executable. */
 typedef int16_t LandruBoolResult;
-#else
-typedef bool LandruBoolResult;
-#endif
 
 enum { LANDRU_RESOURCE_NAME_LENGTH = 8 };
+
+/* res_name capacity of TIE actor, film, palette and sound records. The 1998
+ * Windows Landru reserves a ninth byte; a build selects it by defining this. */
+#ifndef LANDRU_RECORD_NAME_CAPACITY
+#define LANDRU_RECORD_NAME_CAPACITY LANDRU_RESOURCE_NAME_LENGTH
+#endif
 
 #endif

@@ -43,9 +43,10 @@ typedef struct {
 	xactorStateFunc stateFunc;
 } ActorType;
 
+#include <landru/pshpack1.h>
 struct Actor {
 	uint32_t res_type;
-	char res_name[8];
+	char res_name[LANDRU_RECORD_NAME_CAPACITY];
 	Actor* next;
 	int32_t start;
 	int32_t stop;
@@ -95,6 +96,8 @@ struct Actor {
 #endif
 };
 
+#include <landru/poppack.h>
+
 void xactor_Create_Actor_Module(void);
 void xactor_Destroy_Actor_Module(void);
 bool xactor_Create_Actor_Type(uint32_t type, xactorFrameFunc frameFunc, xactorStateFunc stateFunc);
@@ -119,15 +122,15 @@ void xactor_User_Actors(int32_t time);
 Actor* xactor_Find_Actor(uint32_t type, const char* name);
 void xactor_Show_Actor(Actor* actor);
 void xactor_Hide_Actor(Actor* actor);
-LandruBoolResult xactor_Is_Actor_Visible(Actor* actor);
+int16_t xactor_Is_Actor_Visible(Actor* actor);
 void xactor_Activate_Actor(Actor* actor);
 void xactor_Deactivate_Actor(Actor* actor);
-bool xactor_Is_Actor_Active(Actor* actor);
+LandruBoolResult xactor_Is_Actor_Active(Actor* actor);
 void xactor_Start_Actor(Actor* actor);
 void xactor_Stop_Actor(Actor* actor);
 void xactor_Dirty_Actor(Actor* actor);
 void xactor_Non_Dirty_Actor(Actor* actor);
-bool xactor_Is_Actor_Dirty(Actor* actor);
+LandruBoolResult xactor_Is_Actor_Dirty(Actor* actor);
 void xactor_Refresh_Actor(Actor* actor);
 void xactor_Non_Refresh_Actor(Actor* actor);
 int16_t xactor_Is_Actor_Refresh(Actor* actor);
@@ -136,7 +139,7 @@ void xactor_Non_Refreshable_Actor(Actor* actor);
 int16_t xactor_Is_Actor_Refreshable(Actor* actor);
 void xactor_Discard_Actor_Data(Actor* actor);
 void xactor_Non_Discard_Actor_Data(Actor* actor);
-bool xactor_Is_Discard_Actor_Data(Actor* actor);
+LandruBoolResult xactor_Is_Discard_Actor_Data(Actor* actor);
 void xactor_Set_Actor_Flag1(Actor* actor);
 void xactor_Clear_Actor_Flag1(Actor* actor);
 int16_t xactor_Is_Actor_Flag1(Actor* actor);

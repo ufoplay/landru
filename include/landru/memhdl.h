@@ -28,7 +28,7 @@ uint32_t xmemhdl_Get_Handle_Size(LandruHandle handle);
 void xmemhdl_Handle_nSet(LandruHandle handle, uint8_t value, uint32_t size);
 void xmemhdl_Handle_Set(LandruHandle handle, uint8_t value);
 LandruHandle xmemhdl_Data_To_Handle(const void* data, uint32_t size, uint16_t flags);
-int32_t xmemhdl_Resize_Handle(LandruHandle* handle, uint32_t size, uint16_t flags);
+int16_t xmemhdl_Resize_Handle(LandruHandle* handle, uint32_t size, uint16_t flags);
 void xmemhdl_Handle_Copy(LandruHandle destination, LandruHandle source);
 void xmemhdl_Handle_Copy_Portion(LandruHandle destination, LandruHandle source, uint32_t size);
 

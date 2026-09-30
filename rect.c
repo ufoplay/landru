@@ -29,7 +29,7 @@ void xrect_Copy_Rect(Rect* dst, Rect* src) {
 	dst->right = src->right;
 }
 
-bool xrect_Equal_Rect(Rect* rect1, Rect* rect2) {
+LandruBoolResult xrect_Equal_Rect(Rect* rect1, Rect* rect2) {
 	return (rect1->bottom == rect2->bottom) && (rect1->right == rect2->right) && (rect1->top == rect2->top) &&
 		   (rect1->left == rect2->left);
 }
@@ -160,7 +160,7 @@ void xrect_Enclose_Rect(Rect* dstRect, Rect* srcRect) {
 	}
 }
 
-bool xrect_Clip_Rect(Rect* dstRect, const Rect* clipRect) {
+LandruBoolResult xrect_Clip_Rect(Rect* dstRect, const Rect* clipRect) {
 	if (dstRect->left < clipRect->left) {
 		dstRect->left = clipRect->left;
 	}

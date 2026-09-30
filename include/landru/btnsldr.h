@@ -9,6 +9,7 @@
 #include <landru/input.h>
 #include <landru/rect.h>
 
+#include <landru/pshpack1.h>
 typedef struct {
 	Input header;
 	int16_t drag_offset;
@@ -20,6 +21,8 @@ typedef struct {
 	uint8_t page_step;
 	uint8_t action_mode;
 } SliderButton;
+
+#include <landru/poppack.h>
 
 void xbtnsldr_Create_Slider_Button_Module(void);
 void xbtnsldr_Destroy_Slider_Button_Module(void);

@@ -476,7 +476,7 @@ void xsound_Non_Discard_Sound_Data(Sound* sound) {
 	sound->flags &= ~0x0002;
 }
 
-bool xsound_Is_Discard_Sound_Data(Sound* sound) {
+LandruBoolResult xsound_Is_Discard_Sound_Data(Sound* sound) {
 #ifdef LANDRU_GAME_XW
 	if (!sound)
 		return false;
@@ -488,7 +488,7 @@ void xsound_Set_Sound_User_Keep(Sound* sound) { sound->flags |= 0x0004; }
 
 void xsound_Clear_Sound_User_Keep(Sound* sound) { sound->flags &= ~0x0004; }
 
-bool xsound_Is_Sound_User_Keep(Sound* sound) {
+LandruBoolResult xsound_Is_Sound_User_Keep(Sound* sound) {
 #ifdef LANDRU_GAME_XW
 	if (!sound)
 		return false;
@@ -512,7 +512,7 @@ void xsound_Clear_Sound_Keep(Sound* sound) {
 	sound->flags &= ~0x1000;
 }
 
-bool xsound_Is_Sound_Keep(Sound* sound) {
+LandruBoolResult xsound_Is_Sound_Keep(Sound* sound) {
 #ifdef LANDRU_GAME_XW
 	if (!sound)
 		return false;
@@ -530,7 +530,7 @@ void xsound_Clear_Sound_Keepable(Sound* sound) {
 	sound->flags &= ~0x2000;
 }
 
-bool xsound_Is_Sound_Keepable(Sound* sound) {
+LandruBoolResult xsound_Is_Sound_Keepable(Sound* sound) {
 #ifdef LANDRU_GAME_XW
 	if (!sound)
 		return false;

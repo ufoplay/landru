@@ -36,15 +36,20 @@ enum {
 #ifdef LANDRU_GAME_XW
 	SOUND_NAME_CAPACITY = LANDRU_RESOURCE_NAME_LENGTH + 1
 #else
-	SOUND_NAME_CAPACITY = LANDRU_RESOURCE_NAME_LENGTH
+	SOUND_NAME_CAPACITY = LANDRU_RECORD_NAME_CAPACITY
 #endif
 };
 
+#include <landru/pshpack1.h>
 struct Sound {
 	uint32_t res_type;
 	char res_name[SOUND_NAME_CAPACITY];
 	Sound* next;
+#ifdef LANDRU_GAME_XW
 	int32_t type;
+#else
+	SoundType type;
+#endif
 #ifdef LANDRU_GAME_XW
 #ifdef LANDRU_MODERN
 	intptr_t id;
@@ -64,6 +69,8 @@ struct Sound {
 	LandruHandle data;
 	int32_t size;
 };
+
+#include <landru/poppack.h>
 
 Sound* xsound_Ask_Sound_List(void);
 void xsound_Open_Sound(void);
@@ -110,16 +117,16 @@ Sound* xsound_Find_Gmid(const char* name);
 Sound* xsound_Find_Sound_Type(const char* name, uint32_t type);
 void xsound_Discard_Sound_Data(Sound* sound);
 void xsound_Non_Discard_Sound_Data(Sound* sound);
-bool xsound_Is_Discard_Sound_Data(Sound* sound);
+LandruBoolResult xsound_Is_Discard_Sound_Data(Sound* sound);
 void xsound_Set_Sound_User_Keep(Sound* sound);
 void xsound_Clear_Sound_User_Keep(Sound* sound);
-bool xsound_Is_Sound_User_Keep(Sound* sound);
+LandruBoolResult xsound_Is_Sound_User_Keep(Sound* sound);
 void xsound_Set_Sound_Keep(Sound* sound);
 void xsound_Clear_Sound_Keep(Sound* sound);
-bool xsound_Is_Sound_Keep(Sound* sound);
+LandruBoolResult xsound_Is_Sound_Keep(Sound* sound);
 void xsound_Set_Sound_Keepable(Sound* sound);
 void xsound_Clear_Sound_Keepable(Sound* sound);
-bool xsound_Is_Sound_Keepable(Sound* sound);
+LandruBoolResult xsound_Is_Sound_Keepable(Sound* sound);
 void xsound_Set_Sound_Flag1(Sound* sound);
 void xsound_Clear_Sound_Flag1(Sound* sound);
 bool xsound_Is_Sound_Flag1(Sound* sound);

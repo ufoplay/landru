@@ -9,11 +9,14 @@
 #include <landru/input.h>
 #include <landru/rect.h>
 
+#include <landru/pshpack1.h>
 typedef struct {
 	Input header;
-	char* string;        /* 256-byte editable text buffer */
+	LandruHandle string; /* 256-byte editable text buffer */
 	uint8_t filter_type; /* 0=printable, 1=alpha, 2=numeric, 3=alnum+underscore+hyphen */
 } StringButton;
+
+#include <landru/poppack.h>
 
 void xbtnstr_Create_String_Button_Module(void);
 void xbtnstr_Destroy_String_Button_Module(void);

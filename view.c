@@ -262,7 +262,7 @@ void xview_Clear_View_Update_Function(void) { view_gbl->update = NULL; }
 
 void xview_Refresh_View(void) { view_gbl->refresh_world = 1; }
 
-bool xview_Is_View_Erase(int16_t viewId) { return view_gbl->clear_view[viewId] & 1; }
+LandruBoolResult xview_Is_View_Erase(int16_t viewId) { return view_gbl->clear_view[viewId] & 1; }
 
 void xview_Enable_View_Erase(int16_t viewId) { view_gbl->clear_view[viewId] |= 1; }
 
@@ -284,7 +284,7 @@ void xview_Disable_All_View_Erase(void) {
 		xview_Disable_View_Erase(i);
 }
 
-bool xview_Is_View_Copy(int16_t viewId) { return view_gbl->clear_view[viewId] & 2; }
+LandruBoolResult xview_Is_View_Copy(int16_t viewId) { return view_gbl->clear_view[viewId] & 2; }
 
 void xview_Enable_View_Copy(int16_t viewId) { view_gbl->clear_view[viewId] |= 2; }
 

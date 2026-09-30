@@ -9,16 +9,20 @@
 #include <landru/input.h>
 #include <landru/rect.h>
 
+#include <landru/pshpack1.h>
 typedef struct {
 	Input header;
 #ifdef LANDRU_GAME_XW
 	const char* labels;
 	int16_t labelIndex;
 #else
-	char* name;
+	LandruHandle name;
+	int16_t cur_name; /* unused */
 #endif
 	int16_t pressed;
 } PushButton;
+
+#include <landru/poppack.h>
 
 void xbtnpush_Create_Button_Module(void);
 void xbtnpush_Destroy_Button_Module(void);

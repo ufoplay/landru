@@ -91,7 +91,7 @@ LandruHandle xmemhdl_Data_To_Handle(const void* data, uint32_t size, uint16_t fl
 	return handle;
 }
 
-int32_t xmemhdl_Resize_Handle(LandruHandle* handle, uint32_t size, uint16_t flags) {
+int16_t xmemhdl_Resize_Handle(LandruHandle* handle, uint32_t size, uint16_t flags) {
 	if (!handle)
 		return 0;
 	if (size == 0) {

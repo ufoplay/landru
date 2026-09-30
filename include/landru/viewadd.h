@@ -8,8 +8,8 @@
 
 #include <landru/rect.h>
 
-bool xviewadd_Clip_Object_To_View(int16_t viewId, int16_t zPlane, Rect* actFrame, Rect* outFull,
-								  Rect* outClipped);
+LandruBoolResult xviewadd_Clip_Object_To_View(int16_t viewId, int16_t zPlane, Rect* actFrame, Rect* outFull,
+											  Rect* outClipped);
 
 /* Push the view modal-loop task onto the tie_core task stack. Caller
  * must be a task itself; the runner will step the view task next

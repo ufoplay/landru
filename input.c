@@ -78,7 +78,7 @@ void xinput_Destroy_Input_Module(void) {
 
 /* --- Input type registry --- */
 
-bool xinput_Create_Input_Type(uint32_t type, void* create_handler, void* free_handler) {
+LandruBoolResult xinput_Create_Input_Type(uint32_t type, void* create_handler, void* free_handler) {
 	InputType* t = xmemptr_Alloc_Clear_System_Pointer(sizeof(InputType));
 	if (!t)
 		return false;

@@ -9,11 +9,14 @@
 #include <landru/input.h>
 #include <landru/rect.h>
 
+#include <landru/pshpack1.h>
 typedef struct {
 	Input header;
-	char* name;
+	LandruHandle name;
 	int16_t text_color;
 } TextButton;
+
+#include <landru/poppack.h>
 
 void xbtntext_Create_Text_Button_Module(void);
 void xbtntext_Destroy_Text_Button_Module(void);

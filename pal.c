@@ -603,7 +603,7 @@ bool xpal_Compare_Dest_Pal_Color(int16_t start, int16_t end, uint8_t r, uint8_t 
 	return xpal_Compare_Palette_RGB(dst_pal_gbl, r, g, b, start, end - start + 1);
 }
 
-bool xpal_Compare_Src_Dest_Palette(void) {
+LandruBoolResult xpal_Compare_Src_Dest_Palette(void) {
 	return xpal_Compare_Palette(src_pal_gbl, dst_pal_gbl, src_pal_gbl->start, src_pal_gbl->len,
 								src_pal_gbl->start);
 }

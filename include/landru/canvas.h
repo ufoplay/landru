@@ -114,7 +114,7 @@ void xcanvas_Get_Drawing_Canvas_Clip(Rect* rect);
 void xcanvas_Get_Raster_Clip(Rect* rect);
 bool xcanvas_Clip_Rect_To_Raster(Rect* rect);
 void xcanvas_Max_Drawing_Canvas_Clip(void);
-bool xcanvas_Clip_Rect_To_Canvas(Rect* rect);
+LandruBoolResult xcanvas_Clip_Rect_To_Canvas(Rect* rect);
 void xcanvas_Enable_Screen_Diff(void);
 void xcanvas_Disable_Screen_Diff(void);
 #ifdef LANDRU_GAME_XW
@@ -123,9 +123,9 @@ void xcanvas_FreeClippingScratch(void);
 #endif
 void xcanvas_Invalid_Screen_Diff(void);
 void xcanvas_Valid_Screen_Diff(void);
-bool xcanvas_Is_Screen_Diff(void);
-bool xcanvas_Is_Screen_Diff_Used(void);
-bool xcanvas_Is_Screen_Diff_Valid(void);
+LandruBoolResult xcanvas_Is_Screen_Diff(void);
+LandruBoolResult xcanvas_Is_Screen_Diff_Used(void);
+LandruBoolResult xcanvas_Is_Screen_Diff_Valid(void);
 void xcanvas_Copy_Screen_To_Diff(void);
 #ifdef LANDRU_GAME_XW
 void xcanvas_Copy_Screen_Portion_To_Diff(int16_t x, int16_t y, int16_t width, int16_t height);

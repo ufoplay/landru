@@ -38,7 +38,7 @@ void xcursor_Erase_Cursor(int16_t offscreen);
 void xcursor_Cursor_To_Back(void);
 void xcursor_Cursor_To_Front(void);
 void xcursor_Cursor_From_Fade(void);
-bool xcursor_Is_Cursor(void);
+LandruBoolResult xcursor_Is_Cursor(void);
 LandruBoolResult xcursor_Is_Cursor_Visible(void);
 void xcursor_Enable_Cursor(void);
 void xcursor_Disable_Cursor(void);

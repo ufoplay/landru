@@ -53,6 +53,7 @@ typedef enum {
 	FADE_COLOR_PAL_TO_PAL = 5,
 } FadeColorMode;
 
+#include <landru/pshpack1.h>
 typedef struct {
 	uint8_t chan_mode[4];
 	int16_t chan_delay[4];
@@ -73,6 +74,8 @@ typedef struct {
 	uint8_t fade_green;
 	uint8_t fade_blue;
 } Fade;
+
+#include <landru/poppack.h>
 
 void xfade_Create_Fade_Module(void);
 void xfade_Destroy_Fade_Module(void);
@@ -109,10 +112,11 @@ int xfade_Push_Fade_To_Video_Screen_Task(const Rect* clip, int16_t is_dialog, Fa
 void xfade_Calc_Fade_Lock_Time(int32_t* lock_end, int32_t* lock_start);
 void xfade_Fade_Copy_To_Video(Rect* bounds, FadeWipeMode mode, int16_t step, int16_t total,
 							  int16_t is_not_last);
-bool xfade_Is_Fade_Step(FadeWipeMode mode, int16_t sustain, int16_t delay, int32_t cur, int32_t end);
-bool xfade_Is_Fade_Delay_Step(FadeWipeMode mode, int16_t sustain, int32_t cur, int32_t end);
+LandruBoolResult xfade_Is_Fade_Step(FadeWipeMode mode, int16_t sustain, int16_t delay, int32_t cur,
+									int32_t end);
+LandruBoolResult xfade_Is_Fade_Delay_Step(FadeWipeMode mode, int16_t sustain, int32_t cur, int32_t end);
 LandruBoolResult xfade_Fade_Active(void);
-bool xfade_Trans_Fade_Active(void);
+LandruBoolResult xfade_Trans_Fade_Active(void);
 
 /* Publish the current full-frame color fade to the optional render sink.
  * Per-channel and wipe modes remain classic-framebuffer operations. */

@@ -80,7 +80,7 @@ ResFile* xres_Find_File_With_Resource(uint32_t res_type, const char* res_name) {
 	return rf;
 }
 
-bool xres_Is_File_In_Resource(ResFile* rf, uint32_t res_type, const char* res_name) {
+LandruBoolResult xres_Is_File_In_Resource(ResFile* rf, uint32_t res_type, const char* res_name) {
 	ResEntry* entry = xmemhdl_Lock_Handle(rf->res_map);
 	for (uint32_t i = 0; i < rf->res_count; i++) {
 		if (xres_Resource_Compare(&entry[i], res_type, res_name))
@@ -290,8 +290,8 @@ LandruHandle xres_Resource_Data_To_Handle(LandruFile* fileHandle, uint32_t len, 
 int16_t xres_Get_Resource_Offset(ResFile* rf, uint32_t res_type, const char* res_name, int* out_offset,
 								 uint32_t* out_size) {
 #else
-bool xres_Get_Resource_Offset(ResFile* rf, uint32_t res_type, const char* res_name, int* out_offset,
-							  uint32_t* out_size) {
+LandruBoolResult xres_Get_Resource_Offset(ResFile* rf, uint32_t res_type, const char* res_name,
+										  int* out_offset, uint32_t* out_size) {
 #endif
 	int cur_offset = (rf->res_count + 2) * sizeof(ResEntry);
 	ResEntry* entry = xmemhdl_Lock_Handle(rf->res_map);
@@ -310,7 +310,7 @@ bool xres_Get_Resource_Offset(ResFile* rf, uint32_t res_type, const char* res_na
 	return false;
 }
 
-bool xres_Fetch_Resource_Files(ResFile* rf) {
+LandruBoolResult xres_Fetch_Resource_Files(ResFile* rf) {
 	assert(rf != NULL);
 
 	LandruFile* fp = xfile_Open_File(LANDRU_FILE_ROOT_ASSET, rf->filename, "rb");

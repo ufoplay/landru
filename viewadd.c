@@ -20,8 +20,8 @@
 
 #include "host_internal.h"
 
-bool xviewadd_Clip_Object_To_View(int16_t viewId, int16_t zPlane, Rect* actFrame, Rect* outFull,
-								  Rect* outClipped) {
+LandruBoolResult xviewadd_Clip_Object_To_View(int16_t viewId, int16_t zPlane, Rect* actFrame, Rect* outFull,
+											  Rect* outClipped) {
 	if (zPlane < view_gbl->zstart[viewId] || zPlane > view_gbl->zstop[viewId])
 		return false;
 

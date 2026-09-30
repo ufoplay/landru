@@ -30,6 +30,7 @@ void xdialog_Draw_System_Dialogs(int16_t refresh);
  * From inside an input callback, use xdialog_Schedule_Sub_Dialog
  * instead. */
 void xdialog_Push_Dialog_View_Task(Input* list);
+int16_t xdialog_Handle_Dialog_View(Input* list);
 void xdialog_Update_Dialog_End_View(int32_t frame);
 void xdialog_Save_Dialog_Background(void);
 
@@ -75,8 +76,8 @@ void xdialog_Invoke_Sub_Handler(DialogSubResultHandler handler, void* ctx);
 void xdialog_Clear_Dialog_Exit(void);
 int16_t xdialog_Get_Dialog_Exit(void);
 void xdialog_Set_Dialog_Exit(int16_t code);
-bool xdialog_Is_Dialog_Exit(void);
-bool xdialog_Is_Dialog_Running(void);
+LandruBoolResult xdialog_Is_Dialog_Exit(void);
+LandruBoolResult xdialog_Is_Dialog_Running(void);
 LandruBoolResult xdialog_Is_Active_Dialog(void);
 void xdialog_Set_Dialog_Update_Function(DialogUpdateFunc fn);
 DialogUpdateFunc xdialog_Get_Dialog_Update_Function(void);

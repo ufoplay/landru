@@ -39,7 +39,7 @@ void xres_Destroy_Resource_Module(void);
 ResFile* xres_Alloc_Res_File(void);
 void xres_Free_Res_File(ResFile* resFile);
 ResFile* xres_Find_File_With_Resource(uint32_t res_type, const char* res_name);
-bool xres_Is_File_In_Resource(ResFile* resFile, uint32_t res_type, const char* res_name);
+LandruBoolResult xres_Is_File_In_Resource(ResFile* resFile, uint32_t res_type, const char* res_name);
 ResFile* xres_Open_Resource(const char* fileName);
 #ifdef LANDRU_GAME_XW
 int16_t xres_Close_Resource(ResFile* resFile);
@@ -72,10 +72,10 @@ LandruHandle xres_Resource_Data_To_Handle(LandruFile* fileHandle, uint32_t len, 
 int16_t xres_Get_Resource_Offset(ResFile* resFile, uint32_t res_type, const char* res_name, int* out_offset,
 								 uint32_t* out_size);
 #else
-bool xres_Get_Resource_Offset(ResFile* resFile, uint32_t res_type, const char* res_name, int* out_offset,
-							  uint32_t* out_size);
+LandruBoolResult xres_Get_Resource_Offset(ResFile* resFile, uint32_t res_type, const char* res_name,
+										  int* out_offset, uint32_t* out_size);
 #endif
-bool xres_Fetch_Resource_Files(ResFile* resFile);
+LandruBoolResult xres_Fetch_Resource_Files(ResFile* resFile);
 bool xres_Resource_Compare(ResEntry* entry, uint32_t res_type, const char* res_name);
 void xres_Res_Type_To_String(uint32_t type, char* out);
 void xres_Res_String_To_Type(uint32_t* out_type, const char* name);

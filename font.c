@@ -741,7 +741,7 @@ void xfont_Home_Font_Pos(void) {
 	s_font_y = s_font_top;
 }
 
-void xfont_Print_Centered_Text(const char* str, Rect* r, int16_t color, int16_t font_id) {
+void xfont_Print_Centered_Text(const char* str, Rect* r, int16_t font_id, int16_t color) {
 	xfont_Set_Font(font_id);
 	xfont_Set_Font_Color(color);
 	xfont_Allign_String_In_Rect(str, r, 1, 1);
@@ -824,14 +824,14 @@ static int16_t draw_clipped_text(const char* str, int16_t x, int16_t y, int16_t 
 	CanvasBinding saved_canvas;
 	xcanvas_Save_Binding(&saved_canvas);
 	BitmapStruct bm;
-	xbitmap_Init_Bitmap(&bm);
+	xbm_Init_Bitmap(&bm);
 	bm.w = w;
 	bm.h = h;
 	bm.data = calloc(w * h, 1);
 	bm.flags = 1;
 
 	if (bm.data) {
-		xbitmap_Max_Bitmap_Clipping(&bm);
+		xbm_Max_Bitmap_Clipping(&bm);
 		xcanvas_Set_Drawing_Canvas_Bitmap(&bm);
 		xcanvas_Erase_Canvas();
 		*advance = draw_font_text(font, str, x, y, color, xmemhdl_Lock_Handle(font->widthArray),

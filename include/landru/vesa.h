@@ -36,7 +36,7 @@ typedef enum LandruPortVideoBackend {
 	LANDRU_PORT_VIDEO_PLATFORM,
 } LandruPortVideoBackend;
 
-void xbitmap_Set_VGA_Compatibility_Mode(int enabled, int logical_width, int logical_height);
+void xbm_Set_VGA_Compatibility_Mode(int enabled, int logical_width, int logical_height);
 
 void* xvesa_Get_Vesa_Mode_Struct(void);
 uint8_t* xvesa_Get_Video_Buffer(void);

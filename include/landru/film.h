@@ -82,9 +82,10 @@ struct FilmObject {
 	void* object;
 };
 
+#include <landru/pshpack1.h>
 struct Film {
 	uint32_t res_type;
-	char res_name[8];
+	char res_name[LANDRU_RECORD_NAME_CAPACITY];
 	Film* next;
 	Palette* def_palette;
 	int32_t start;
@@ -107,6 +108,8 @@ struct Film {
 	xfilmCallback user;
 };
 
+#include <landru/poppack.h>
+
 Film* xfilm_Ask_Film_List(void);
 void xfilm_Add_Film_To_System(Film* film);
 void xfilm_Free_Film_From_System(Film* film);
@@ -124,9 +127,9 @@ Film* xfilm_Res_Film(const char* name, Rect* frame, int16_t x, int16_t y, int16_
 Film* xfilm_Res_Callback_Film(const char* name, Rect* frame, int16_t x, int16_t y, int16_t zPlane,
 							  xfilmCallbackFunc cbFunc);
 #endif
-bool xfilm_Res_Film_Data(ResFile* fp, LandruHandle array, int16_t count);
-bool xfilm_Res_Film_Objects(Film* film, xfilmCallbackFunc callback);
-bool xfilm_Res_Film_Object(uint32_t objType, const char* objName, void** outObj);
+LandruBoolResult xfilm_Res_Film_Data(ResFile* fp, LandruHandle array, int16_t count);
+LandruBoolResult xfilm_Res_Film_Objects(Film* film, xfilmCallbackFunc callback);
+LandruBoolResult xfilm_Res_Film_Object(uint32_t objType, const char* objName, void** outObj);
 Actor* xfilm_Clone_Film_Actor(uint32_t actType, const char* actName);
 Sound* xfilm_Clone_Film_Sound(uint32_t sndType, const char* sndName);
 void xfilm_Init_Film(Film* film, LandruHandle array, Rect* frame, int16_t x, int16_t y, int16_t z);
@@ -161,10 +164,10 @@ void xfilm_Set_Film_User_Function(Film* film, xfilmCallback user);
 void xfilm_Get_Film_User_Function(Film* film, xfilmCallback* outUser);
 void xfilm_Show_Film(Film* film);
 void xfilm_Hide_Film(Film* film);
-bool xfilm_Is_Film_Visible(Film* film);
+LandruBoolResult xfilm_Is_Film_Visible(Film* film);
 void xfilm_Activate_Film(Film* film);
 void xfilm_Deactivate_Film(Film* film);
-bool xfilm_Is_Film_Active(Film* film);
+LandruBoolResult xfilm_Is_Film_Active(Film* film);
 void xfilm_Start_Film(Film* film);
 void xfilm_Stop_Film(Film* film);
 void xfilm_Rewind_Film(Film* film);
@@ -176,10 +179,10 @@ void xfilm_Non_Refreshable_Film(Film* film);
 bool xfilm_Is_Film_Refreshable(Film* film);
 void xfilm_Discard_Film_Data(Film* film);
 void xfilm_Non_Discard_Film_Data(Film* film);
-bool xfilm_Is_Discard_Film_Data(Film* film);
+LandruBoolResult xfilm_Is_Discard_Film_Data(Film* film);
 void xfilm_Repeat_Film(Film* film);
 void xfilm_Non_Repeat_Film(Film* film);
-bool xfilm_Is_Repeat_Film(Film* film);
+LandruBoolResult xfilm_Is_Repeat_Film(Film* film);
 void xfilm_Set_Film_Flag1(Film* film);
 void xfilm_Clear_Film_Flag1(Film* film);
 bool xfilm_Is_Film_Flag1(Film* film);
@@ -190,7 +193,7 @@ void xfilm_Check_Film_ZPlanes(void);
 void xfilm_Sort_Film_ZPlanes(void);
 void xfilm_Clear_Film_Fade(void);
 void xfilm_Start_Film_Fade(int16_t direction);
-bool xfilm_Is_Film_Fade(void);
+LandruBoolResult xfilm_Is_Film_Fade(void);
 void xfilm_Set_Film_Fade(uint8_t fade, uint8_t colorFade);
 void xfilm_Rewind_Film_Objects(Film* film);
 void xfilm_Rewind_View_Film(Film* film, FilmObject* obj, void* data);
@@ -207,8 +210,8 @@ void xfilm_Set_Actor_To_Film(FilmObject* obj, void* data);
 void xfilm_Step_Sound_Film(Film* film, FilmObject* obj, void* data);
 void xfilm_Set_Sound_To_Film(FilmObject* obj, void* data);
 void xfilm_Step_Film_Frame(FilmObject* obj, void* data);
-bool xfilm_Is_Film_Time_Stamp(Film* film, FilmObject* obj, void* data);
-bool xfilm_Is_Film_Next_Frame(FilmObject* obj, void* data);
+LandruBoolResult xfilm_Is_Film_Time_Stamp(Film* film, FilmObject* obj, void* data);
+LandruBoolResult xfilm_Is_Film_Next_Frame(FilmObject* obj, void* data);
 
 /* Publish the live film list and scene clock to the optional render sink. */
 void xfilm_emit_render_state(void);

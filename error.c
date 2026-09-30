@@ -42,7 +42,7 @@ void xerror_Set_Landru_Exit(int16_t code) { landru_exit_gbl = code; }
 
 LandruBoolResult xerror_Is_Landru_Exit(void) { return landru_exit_gbl != -1; }
 
-bool xerror_Is_Landru_Running(void) { return landru_exit_gbl == -1 && !xerror_Is_Landru_Error(); }
+LandruBoolResult xerror_Is_Landru_Running(void) { return landru_exit_gbl == -1 && !xerror_Is_Landru_Error(); }
 
 /* --- Escape --- */
 

@@ -84,11 +84,11 @@ bool xsurface_Create_Surface_Module(bool create_secondary_vga) {
 #else
 	if (create_secondary_vga) {
 		if (surface_state.native_set != LANDRU_SURFACE_SVGA ||
-			!xbitmap_Alloc_System_Bitmap(&surface_state.vga_render, 320, 200) ||
-			!xbitmap_Alloc_System_Bitmap(&surface_state.vga_diff, 320, 200) ||
+			!xbm_Alloc_System_Bitmap(&surface_state.vga_render, 320, 200) ||
+			!xbm_Alloc_System_Bitmap(&surface_state.vga_diff, 320, 200) ||
 			!(surface_state.vga_video = calloc(320u * 200u, 1))) {
-			xbitmap_Free_Bitmap(&surface_state.vga_render);
-			xbitmap_Free_Bitmap(&surface_state.vga_diff);
+			xbm_Free_Bitmap(&surface_state.vga_render);
+			xbm_Free_Bitmap(&surface_state.vga_diff);
 			free(surface_state.vga_video);
 			surface_state.vga_video = NULL;
 			return false;
@@ -108,8 +108,8 @@ bool xsurface_Create_Surface_Module(bool create_secondary_vga) {
 		if (!surface_state.vga_video || !surface_state.presented_pixels) {
 			free(surface_state.presented_pixels);
 			free(surface_state.vga_video);
-			xbitmap_Free_Bitmap(&surface_state.vga_render);
-			xbitmap_Free_Bitmap(&surface_state.vga_diff);
+			xbm_Free_Bitmap(&surface_state.vga_render);
+			xbm_Free_Bitmap(&surface_state.vga_diff);
 			vga_compat_buffer_gbl = NULL;
 			memset(&surface_state, 0, sizeof surface_state);
 			return false;
@@ -127,8 +127,8 @@ void xsurface_Destroy_Surface_Module(void) {
 
 	if (xsurface_Get_Surface_Set() != surface_state.native_set)
 		(void)xsurface_Select_Surface_Set(surface_state.native_set);
-	xbitmap_Free_Bitmap(&surface_state.vga_diff);
-	xbitmap_Free_Bitmap(&surface_state.vga_render);
+	xbm_Free_Bitmap(&surface_state.vga_diff);
+	xbm_Free_Bitmap(&surface_state.vga_render);
 	free(surface_state.vga_video);
 #ifdef LANDRU_MODERN
 	free(surface_state.presented_pixels);
@@ -158,9 +158,8 @@ bool xsurface_Select_Surface_Set(LandruSurfaceSet set) {
 	if (set == xsurface_Get_Surface_Set())
 		return true;
 	bool low_resolution = set == LANDRU_SURFACE_VGA;
-	xbitmap_Set_VGA_Compatibility_Mode(low_resolution,
-									   low_resolution ? LANDRU_VGA_WIDTH : LANDRU_SCREEN_WIDTH,
-									   low_resolution ? LANDRU_VGA_HEIGHT : LANDRU_SCREEN_HEIGHT);
+	xbm_Set_VGA_Compatibility_Mode(low_resolution, low_resolution ? LANDRU_VGA_WIDTH : LANDRU_SCREEN_WIDTH,
+								   low_resolution ? LANDRU_VGA_HEIGHT : LANDRU_SCREEN_HEIGHT);
 	surface_state.active_set = set;
 #ifdef LANDRU_MODERN
 	if (uses_vga_video())
@@ -213,9 +212,9 @@ bool xsurface_Select_Surface_Set(LandruSurfaceSet set) {
 
 	surface_state.active_set = set;
 	if (set == LANDRU_SURFACE_VGA && surface_state.secondary_vga)
-		xbitmap_Set_VGA_Compatibility_Mode(1, 320, 200);
+		xbm_Set_VGA_Compatibility_Mode(1, 320, 200);
 	else
-		xbitmap_Set_VGA_Compatibility_Mode(0, new_render->w, new_render->h);
+		xbm_Set_VGA_Compatibility_Mode(0, new_render->w, new_render->h);
 	xrect_Set_Rect(&bounds, 0, 0, new_render->w, new_render->h);
 	xio_Set_Mouse_Limits(&bounds);
 	xio_Set_Mouse_Position(new_x, new_y);

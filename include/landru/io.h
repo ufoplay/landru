@@ -98,7 +98,7 @@ LandruBoolResult xio_Blink(void);
 bool xio_Fast_Blink(void);
 void xio_Set_System_Speed(LandruSystemSpeed speed);
 bool xio_Is_System_Fast_Enough(uint8_t level);
-LandruBoolResult xio_Is_System_Slower_Than(LandruSystemSpeed speed);
+int16_t xio_Is_System_Slower_Than(LandruSystemSpeed speed);
 int xio_Special_Keys(void);
 int xio_Wait_Key(void);
 int xio_Test_Key(void);

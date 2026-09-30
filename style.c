@@ -132,11 +132,7 @@ void xstyle_Style_Button_Text(const char* str, Rect* r, int16_t pressed) {
 		color = xremap_Get_Remap(REMAP_GRAY_1);
 #endif
 	}
-#ifdef LANDRU_GAME_XW
 	xfont_Print_Centered_Text(str, &ra, 0, color);
-#else
-	xfont_Print_Centered_Text(str, &ra, color, 0);
-#endif
 }
 
 void xstyle_Style_Small_Button_Text(const char* str, Rect* r, int16_t pressed) {
@@ -146,7 +142,7 @@ void xstyle_Style_Small_Button_Text(const char* str, Rect* r, int16_t pressed) {
 	xfont_Print_Centered_Text(str, &ra, 1, color);
 #else
 	int16_t color = xremap_Get_Remap(pressed ? REMAP_GRAY_4 : REMAP_GRAY_2);
-	xfont_Print_Centered_Text(str, &ra, color, 1);
+	xfont_Print_Centered_Text(str, &ra, 1, color);
 #endif
 }
 

@@ -282,13 +282,13 @@ void xactor_Hide_Actor(Actor* actor) {
 	actor->flags &= ~AF_VISIBLE;
 }
 
-LandruBoolResult xactor_Is_Actor_Visible(Actor* actor) { return actor->flags & AF_VISIBLE; }
+int16_t xactor_Is_Actor_Visible(Actor* actor) { return actor->flags & AF_VISIBLE; }
 
 void xactor_Activate_Actor(Actor* actor) { actor->flags |= AF_ACTIVE; }
 
 void xactor_Deactivate_Actor(Actor* actor) { actor->flags &= ~AF_ACTIVE; }
 
-bool xactor_Is_Actor_Active(Actor* actor) { return actor->flags & AF_ACTIVE; }
+LandruBoolResult xactor_Is_Actor_Active(Actor* actor) { return actor->flags & AF_ACTIVE; }
 
 void xactor_Start_Actor(Actor* actor) { actor->flags |= (AF_VISIBLE | AF_ACTIVE); }
 
@@ -298,7 +298,7 @@ void xactor_Dirty_Actor(Actor* actor) { actor->flags |= AF_DIRTY; }
 
 void xactor_Non_Dirty_Actor(Actor* actor) { actor->flags &= ~AF_DIRTY; }
 
-bool xactor_Is_Actor_Dirty(Actor* actor) { return actor->flags & AF_DIRTY; }
+LandruBoolResult xactor_Is_Actor_Dirty(Actor* actor) { return actor->flags & AF_DIRTY; }
 
 void xactor_Refresh_Actor(Actor* actor) {
 #ifdef LANDRU_GAME_XW
@@ -336,7 +336,7 @@ void xactor_Discard_Actor_Data(Actor* actor) { actor->flags |= AF_DISCARD; }
 
 void xactor_Non_Discard_Actor_Data(Actor* actor) { actor->flags &= ~AF_DISCARD; }
 
-bool xactor_Is_Discard_Actor_Data(Actor* actor) { return actor->flags & AF_DISCARD; }
+LandruBoolResult xactor_Is_Discard_Actor_Data(Actor* actor) { return actor->flags & AF_DISCARD; }
 
 void xactor_Set_Actor_Flag1(Actor* actor) { actor->flags |= AF_FLAG1; }
 

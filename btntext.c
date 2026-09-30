@@ -1,12 +1,11 @@
 #include <stddef.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include <landru/btntext.h>
 #include <landru/dirty.h>
 #include <landru/font.h>
 #include <landru/inpattr.h>
-#include <landru/memptr.h>
+#include <landru/memhdl.h>
 #include <landru/paint.h>
 #include <landru/rect.h>
 #include <landru/style.h>
@@ -78,8 +77,8 @@ TextButton* xbtntext_Alloc_Frame_Button(Input* parent, Rect* frame, int16_t zinp
 
 int16_t xbtntext_Free_Text_Button(TextButton* btn) {
 	if (btn->name) {
-		free(btn->name);
-		btn->name = NULL;
+		xmemhdl_Free_Handle(btn->name);
+		btn->name = LANDRU_NULL_HANDLE;
 	}
 	return 1;
 }
@@ -91,10 +90,17 @@ void xbtntext_Init_Text_Button(TextButton* btn, InputUserFunc callback, const ch
 	btn->header.mouseUsage = downMoveUpInput;
 	btn->header.id = id;
 
-	if (name)
-		btn->name = xmemptr_Duplicate_String(name);
-	else
-		btn->name = NULL;
+	int16_t size = name ? (int16_t)(strlen(name) + 1) : 0;
+	if (size) {
+		LandruHandle handle = xmemhdl_Alloc_Handle(size, 0);
+		if (handle) {
+			memcpy(xmemhdl_Lock_Handle(handle), name, size);
+			xmemhdl_Unlock_Handle(handle);
+		}
+		btn->name = handle;
+	} else {
+		btn->name = LANDRU_NULL_HANDLE;
+	}
 
 	btn->text_color = 26;
 }
@@ -130,9 +136,10 @@ void xbtntext_idraw_Text_Button(TextButton* btn, Rect* paint_rect, Rect* dirty_r
 	xrect_Copy_Rect(&dst, paint_rect);
 
 	if (btn->name) {
+		const char* name = (const char*)xmemhdl_Lock_Handle(btn->name);
 		if (btn->header.type == FOURCC_FRAM) {
 			/* Clear a gap behind the centered text label */
-			int16_t str_w = xfont_Get_String_Width(btn->name);
+			int16_t str_w = xfont_Get_String_Width(name);
 			dst.bottom = dst.top + font_h;
 			dst.left = dst.left + (dst.right - dst.left - str_w) / 2 - 2;
 			dst.right = dst.left + str_w + 4;
@@ -142,8 +149,9 @@ void xbtntext_idraw_Text_Button(TextButton* btn, Rect* paint_rect, Rect* dirty_r
 
 		int16_t saved_color = xfont_Get_Font_Color();
 		xfont_Set_Font_Color(btn->text_color);
-		xfont_Draw_Alligned_Text(btn->name, &dst, 1, 1);
+		xfont_Draw_Alligned_Text(name, &dst, 1, 1);
 		xfont_Set_Font_Color(saved_color);
+		xmemhdl_Unlock_Handle(btn->name);
 	}
 
 	xfont_Set_Font(saved_font);
@@ -153,16 +161,25 @@ void xbtntext_idraw_Text_Button(TextButton* btn, Rect* paint_rect, Rect* dirty_r
 }
 
 void xbtntext_Set_Text_Button_Name(TextButton* btn, const char* name) {
-	free(btn->name);
-	btn->name = xmemptr_Duplicate_String(name);
+	int16_t size = name ? (int16_t)(strlen(name) + 1) : 0;
+	if (xmemhdl_Resize_Handle(&btn->name, size, 0) && btn->name) {
+		char* dst = (char*)xmemhdl_Lock_Handle(btn->name);
+		if (name)
+			strcpy(dst, name);
+		else
+			*dst = '\0';
+		xmemhdl_Unlock_Handle(btn->name);
+	}
 	xinpattr_Refresh_Input(&btn->header);
 }
 
 void xbtntext_Get_Text_Button_Name(TextButton* btn, char* out) {
-	if (btn->name)
-		strcpy(out, btn->name);
-	else
+	if (btn->name) {
+		strcpy(out, (const char*)xmemhdl_Lock_Handle(btn->name));
+		xmemhdl_Unlock_Handle(btn->name);
+	} else {
 		*out = '\0';
+	}
 }
 
 void xbtntext_Set_Text_Button_Color(TextButton* btn, int16_t color) {

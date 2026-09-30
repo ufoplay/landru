@@ -199,7 +199,7 @@ Film* xfilm_Res_Callback_Film(const char* name, Rect* frame, int16_t x, int16_t 
 	return film;
 }
 
-bool xfilm_Res_Film_Object(uint32_t objType, const char* objName, void** outObj) {
+LandruBoolResult xfilm_Res_Film_Object(uint32_t objType, const char* objName, void** outObj) {
 	Rect canvasBounds;
 	Actor* actor = NULL;
 	void* object = NULL;
@@ -347,7 +347,7 @@ Sound* xfilm_Clone_Film_Sound(uint32_t sndType, const char* sndName) {
 	return curSound;
 }
 
-bool xfilm_Res_Film_Data(ResFile* fp, LandruHandle arrayHandle, int16_t count) {
+LandruBoolResult xfilm_Res_Film_Data(ResFile* fp, LandruHandle arrayHandle, int16_t count) {
 	LandruHandle* array = xmemhdl_Lock_Handle(arrayHandle);
 	if (!array)
 		return false;
@@ -379,7 +379,7 @@ bool xfilm_Res_Film_Data(ResFile* fp, LandruHandle arrayHandle, int16_t count) {
 	return true;
 }
 
-bool xfilm_Res_Film_Objects(Film* film, xfilmCallbackFunc callback) {
+LandruBoolResult xfilm_Res_Film_Objects(Film* film, xfilmCallbackFunc callback) {
 	LandruHandle* array = xmemhdl_Lock_Handle(film->array);
 	for (int16_t i = 0; i < film->array_size; i++) {
 		FilmObject* filmObj = xmemhdl_Lock_Handle(array[i]);
@@ -504,9 +504,9 @@ void xfilm_Set_Film_Name(Film* film, uint32_t res_type, const char* name) {
 
 void xfilm_Set_Film_Def_Palette(Film* film, Palette* palette) { film->def_palette = palette; }
 
-bool xfilm_Is_Film_Visible(Film* film) { return film->flags & FF_VISIBLE; }
+LandruBoolResult xfilm_Is_Film_Visible(Film* film) { return film->flags & FF_VISIBLE; }
 
-bool xfilm_Is_Film_Active(Film* film) { return film->flags & FF_ACTIVE; }
+LandruBoolResult xfilm_Is_Film_Active(Film* film) { return film->flags & FF_ACTIVE; }
 
 void xfilm_Start_Film(Film* film) {
 	xfilm_Rewind_Film(film);
@@ -525,9 +525,9 @@ bool xfilm_Is_Film_Refreshable(Film* film) { return film->flags & FF_REFRESHABLE
 
 void xfilm_Discard_Film_Data(Film* film) { film->flags |= FF_DISCARD; }
 
-bool xfilm_Is_Discard_Film_Data(Film* film) { return film->flags & FF_DISCARD; }
+LandruBoolResult xfilm_Is_Discard_Film_Data(Film* film) { return film->flags & FF_DISCARD; }
 
-bool xfilm_Is_Repeat_Film(Film* film) { return film->flags & FF_REPEAT; }
+LandruBoolResult xfilm_Is_Repeat_Film(Film* film) { return film->flags & FF_REPEAT; }
 
 void xfilm_Check_Film_ZPlanes(void) {
 	if (!film_zplane_gbl)
@@ -586,7 +586,7 @@ void xfilm_Start_Film_Fade(int16_t direction) {
 	xfilm_Clear_Film_Fade();
 }
 
-bool xfilm_Is_Film_Fade(void) { return film_fade_gbl || film_color_fade_gbl; }
+LandruBoolResult xfilm_Is_Film_Fade(void) { return film_fade_gbl || film_color_fade_gbl; }
 
 void xfilm_Rewind_Film_Objects(Film* film) {
 	LandruHandle* array = xmemhdl_Lock_Handle(film->array);
@@ -927,12 +927,12 @@ void xfilm_Step_Film_Frame(FilmObject* obj, void* data) {
 	obj->offset += chunk[0];
 }
 
-bool xfilm_Is_Film_Time_Stamp(Film* film, FilmObject* obj, void* data) {
+LandruBoolResult xfilm_Is_Film_Time_Stamp(Film* film, FilmObject* obj, void* data) {
 	int16_t* chunk = (int16_t*)((uint8_t*)data + obj->offset);
 	return (chunk[1] == FCMD_TIMESTAMP) && (chunk[2] == film->cur_cel);
 }
 
-bool xfilm_Is_Film_Next_Frame(FilmObject* obj, void* data) {
+LandruBoolResult xfilm_Is_Film_Next_Frame(FilmObject* obj, void* data) {
 	int16_t* chunk = (int16_t*)((uint8_t*)data + obj->offset);
 	return (chunk[1] == FCMD_TIMESTAMP) || (chunk[1] == FCMD_END);
 }

@@ -19,6 +19,7 @@
 #include "render_internal.h"
 
 // GLOBAL: TIE95 0xD2F54
+// GLOBAL: TIE98 0x58B87C
 static Fade* fade_gbl;
 // GLOBAL: TIE95 0xD2F58
 static int16_t fade_module_gbl;
@@ -776,7 +777,8 @@ void xfade_Calc_Fade_Lock_Time(int32_t* lock_end, int32_t* lock_start) {
 	*lock_end = latest_end;
 }
 
-bool xfade_Is_Fade_Step(FadeWipeMode mode, int16_t sustain, int16_t delay, int32_t cur, int32_t end) {
+LandruBoolResult xfade_Is_Fade_Step(FadeWipeMode mode, int16_t sustain, int16_t delay, int32_t cur,
+									int32_t end) {
 	if (!mode)
 		return false;
 	if (cur != end)
@@ -784,7 +786,7 @@ bool xfade_Is_Fade_Step(FadeWipeMode mode, int16_t sustain, int16_t delay, int32
 	return delay == 0;
 }
 
-bool xfade_Is_Fade_Delay_Step(FadeWipeMode mode, int16_t sustain, int32_t cur, int32_t end) {
+LandruBoolResult xfade_Is_Fade_Delay_Step(FadeWipeMode mode, int16_t sustain, int32_t cur, int32_t end) {
 	return sustain && mode && cur == end;
 }
 
@@ -798,7 +800,7 @@ LandruBoolResult xfade_Fade_Active(void) {
 	return false;
 }
 
-bool xfade_Trans_Fade_Active(void) {
+LandruBoolResult xfade_Trans_Fade_Active(void) {
 	int i;
 	if (fade_gbl->full_mode && !fade_gbl->full_delay) {
 		if (fade_gbl->full_mode > FADE_WIPE_SNAP_OFF || fade_gbl->color_mode != FADE_COLOR_PAL_TO_PAL ||

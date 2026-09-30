@@ -1,6 +1,5 @@
 #include <ctype.h>
 #include <stddef.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include <landru/btnstr.h>
@@ -9,6 +8,7 @@
 #include <landru/inpattr.h>
 #include <landru/inpcall.h>
 #include <landru/io.h>
+#include <landru/memhdl.h>
 #include <landru/paint.h>
 #include <landru/rect.h>
 #include <landru/remap.h>
@@ -72,16 +72,18 @@ StringButton* xbtnstr_Alloc_String_Button(Input* parent, Rect* frame, int16_t zi
 	btn->header.id = id;
 	btn->header.type = FOURCC_STRG;
 
-	btn->string = (char*)malloc(STRING_BUF_SIZE);
-	if (btn->string && initial_str) {
+	btn->string = xmemhdl_Alloc_Handle(STRING_BUF_SIZE, 0);
+	if (btn->string) {
+		char* string = (char*)xmemhdl_Lock_Handle(btn->string);
 		int16_t i = 0;
-		while (initial_str[i] && i < STRING_BUF_SIZE - 1) {
-			btn->string[i] = initial_str[i];
-			i++;
+		if (initial_str) {
+			while (initial_str[i] && i < STRING_BUF_SIZE - 1) {
+				string[i] = initial_str[i];
+				i++;
+			}
 		}
-		btn->string[i] = '\0';
-	} else if (btn->string) {
-		btn->string[0] = '\0';
+		string[i] = '\0';
+		xmemhdl_Unlock_Handle(btn->string);
 	}
 
 	btn->filter_type = filter_type;
@@ -91,8 +93,8 @@ StringButton* xbtnstr_Alloc_String_Button(Input* parent, Rect* frame, int16_t zi
 
 int16_t xbtnstr_Free_String_Button(StringButton* btn) {
 	if (btn->string) {
-		free(btn->string);
-		btn->string = NULL;
+		xmemhdl_Free_Handle(btn->string);
+		btn->string = LANDRU_NULL_HANDLE;
 	}
 	return 1;
 }
@@ -105,15 +107,19 @@ void xbtnstr_idraw_String_Button(Input* input, Rect* paint_rect, Rect* dirty_rec
 		xstyle_Style_Paint_TextField(paint_rect);
 		if (btn->string) {
 			int16_t color = xstyle_Get_Style_Down_Color();
-			xfont_Print_Clipped_Text(btn->string, paint_rect->left + 3, paint_rect->top + 3, 0, color);
+			xfont_Print_Clipped_Text((const char*)xmemhdl_Lock_Handle(btn->string), paint_rect->left + 3,
+									 paint_rect->top + 3, 0, color);
+			xmemhdl_Unlock_Handle(btn->string);
 		}
 	}
 
 	/* Blinking cursor when active and key-focused */
 	if (xinpattr_Is_Input_Active(&btn->header) && (btn->header.flags & INPUT_KEY_FOCUSED)) {
 		int16_t str_w = 0;
-		if (btn->string)
-			str_w = xfont_Get_String_Width(btn->string);
+		if (btn->string) {
+			str_w = xfont_Get_String_Width((const char*)xmemhdl_Lock_Handle(btn->string));
+			xmemhdl_Unlock_Handle(btn->string);
+		}
 
 		int16_t cursor_color;
 		if (xio_Blink())
@@ -145,37 +151,39 @@ int16_t xbtnstr_iupdate_String_Button(Input* input, Rect* frame, Rect* clip, int
 	int16_t updated = 0;
 
 	if (key) {
+		char* string = (char*)xmemhdl_Lock_Handle(btn->string);
 		/* Backspace (8) or Delete (0x5300) → truncate */
 		if (key == 8 || key == 0x5300) {
-			int len = (int16_t)strlen(btn->string);
+			int len = (int16_t)strlen(string);
 			if (len > 0)
-				btn->string[len - 1] = '\0';
+				string[len - 1] = '\0';
 			updated = 1;
 		} else {
 			/* Filter by type and append */
 			switch (btn->filter_type) {
 				case 0: /* Printable ASCII */
 					if (key >= 32 && key < 127)
-						updated = xbtnstr_Add_Key_To_String(btn->string, key);
+						updated = xbtnstr_Add_Key_To_String(string, key);
 					break;
 				case 1: /* Alpha */
 					if (isalpha((unsigned char)key))
-						updated = xbtnstr_Add_Key_To_String(btn->string, key);
+						updated = xbtnstr_Add_Key_To_String(string, key);
 					break;
 				case 2: /* Numeric (with optional leading minus) */
-					if (key == '-' && strlen(btn->string) == 0)
-						updated = xbtnstr_Add_Key_To_String(btn->string, key);
+					if (key == '-' && strlen(string) == 0)
+						updated = xbtnstr_Add_Key_To_String(string, key);
 					else if (isdigit((unsigned char)key))
-						updated = xbtnstr_Add_Key_To_String(btn->string, key);
+						updated = xbtnstr_Add_Key_To_String(string, key);
 					break;
 				case 3: /* Alphanumeric + underscore + hyphen */
 					if (key > 32 && key < 127 &&
 						(key == '_' || key == '-' || isdigit((unsigned char)key) ||
 						 isalpha((unsigned char)key)))
-						updated = xbtnstr_Add_Key_To_String(btn->string, key);
+						updated = xbtnstr_Add_Key_To_String(string, key);
 					break;
 			}
 		}
+		xmemhdl_Unlock_Handle(btn->string);
 	} else if (mouse_l == 1 || mouse_r == 1) {
 		updated = 1;
 		xinpcall_Select_View_Shared_Key_Input(&btn->header);
@@ -199,10 +207,12 @@ int16_t xbtnstr_Add_Key_To_String(char* str, int16_t key) {
 
 void xbtnstr_Set_String_Button_Name(StringButton* btn, const char* name) {
 	if (btn->string) {
+		char* string = (char*)xmemhdl_Lock_Handle(btn->string);
 		if (name)
-			strcpy(btn->string, name);
+			strcpy(string, name);
 		else
-			btn->string[0] = '\0';
+			string[0] = '\0';
+		xmemhdl_Unlock_Handle(btn->string);
 		xinpattr_Refresh_Input(&btn->header);
 	}
 }
@@ -213,12 +223,14 @@ void xbtnstr_Get_String_Button_Name(StringButton* btn, char* out) {
 
 void xbtnstr_Get_Clipped_String_Button_Name(StringButton* btn, char* out, int16_t max_len) {
 	if (btn->string) {
+		const char* string = (const char*)xmemhdl_Lock_Handle(btn->string);
 		int16_t i = 0;
-		while (i < max_len - 1 && btn->string[i]) {
-			out[i] = btn->string[i];
+		while (i < max_len - 1 && string[i]) {
+			out[i] = string[i];
 			i++;
 		}
 		out[i] = '\0';
+		xmemhdl_Unlock_Handle(btn->string);
 	} else {
 		*out = '\0';
 	}

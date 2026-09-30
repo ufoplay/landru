@@ -610,9 +610,11 @@ int16_t xdialog_Get_Dialog_Exit(void) { return dlg_exit_gbl; }
 
 void xdialog_Set_Dialog_Exit(int16_t code) { dlg_exit_gbl = code; }
 
-bool xdialog_Is_Dialog_Exit(void) { return dlg_exit_gbl != 0; }
+LandruBoolResult xdialog_Is_Dialog_Exit(void) { return dlg_exit_gbl != 0; }
 
-bool xdialog_Is_Dialog_Running(void) { return xerror_Is_Landru_Running() && !xdialog_Is_Dialog_Exit(); }
+LandruBoolResult xdialog_Is_Dialog_Running(void) {
+	return xerror_Is_Landru_Running() && !xdialog_Is_Dialog_Exit();
+}
 
 LandruBoolResult xdialog_Is_Active_Dialog(void) { return *dialog_list() != NULL; }
 

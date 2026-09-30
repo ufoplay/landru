@@ -1,11 +1,10 @@
-#include <stdlib.h>
 #include <string.h>
 
 #include <landru/btnpush.h>
 #include <landru/dirty.h>
 #include <landru/fourcc.h>
 #include <landru/inpattr.h>
-#include <landru/memptr.h>
+#include <landru/memhdl.h>
 #include <landru/rect.h>
 #include <landru/style.h>
 
@@ -84,8 +83,8 @@ PushButton* xbtnpush_Alloc_Small_Button(Input* parent, Rect* frame, int16_t zinp
 #ifndef LANDRU_GAME_XW
 int16_t xbtnpush_Free_Button(PushButton* btn) {
 	if (btn->name) {
-		free(btn->name);
-		btn->name = NULL;
+		xmemhdl_Free_Handle(btn->name);
+		btn->name = LANDRU_NULL_HANDLE;
 	}
 	return 1;
 }
@@ -103,11 +102,17 @@ void xbtnpush_Init_Button(PushButton* btn, InputUserFunc callback, const char* n
 	btn->labels = name;
 	btn->labelIndex = 0;
 #else
-	if (name)
-		btn->name = xmemptr_Duplicate_String(name);
-	else
-		btn->name = NULL;
-
+	int16_t size = name ? (int16_t)(strlen(name) + 1) : 0;
+	if (size) {
+		LandruHandle handle = xmemhdl_Alloc_Handle(size, 0);
+		if (handle) {
+			memcpy(xmemhdl_Lock_Handle(handle), name, size);
+			xmemhdl_Unlock_Handle(handle);
+		}
+		btn->name = handle;
+	} else {
+		btn->name = LANDRU_NULL_HANDLE;
+	}
 #endif
 
 	btn->pressed = 0;
@@ -152,10 +157,12 @@ void xbtnpush_idraw_Button(Input* input, Rect* paint_rect, Rect* dirty_rect, int
 
 	/* Draw centered label text */
 	if (btn->name) {
+		const char* name = (const char*)xmemhdl_Lock_Handle(btn->name);
 		if (btn->header.type == FOURCC_BUTN)
-			xstyle_Style_Button_Text(btn->name, paint_rect, btn->pressed);
+			xstyle_Style_Button_Text(name, paint_rect, btn->pressed);
 		else
-			xstyle_Style_Small_Button_Text(btn->name, paint_rect, btn->pressed);
+			xstyle_Style_Small_Button_Text(name, paint_rect, btn->pressed);
+		xmemhdl_Unlock_Handle(btn->name);
 	}
 
 	if (xinpattr_Is_Input_Dirty(&btn->header))
@@ -202,8 +209,15 @@ void xbtnpush_Set_Button_Name(PushButton* btn, const char* name) {
 #ifdef LANDRU_GAME_XW
 	btn->labels = name;
 #else
-	free(btn->name);
-	btn->name = xmemptr_Duplicate_String(name);
+	int16_t size = name ? (int16_t)(strlen(name) + 1) : 0;
+	if (xmemhdl_Resize_Handle(&btn->name, size, 0) && btn->name) {
+		char* dst = (char*)xmemhdl_Lock_Handle(btn->name);
+		if (name)
+			strcpy(dst, name);
+		else
+			*dst = '\0';
+		xmemhdl_Unlock_Handle(btn->name);
+	}
 #endif
 	xinpattr_Refresh_Input(&btn->header);
 }
@@ -215,10 +229,12 @@ void xbtnpush_Set_Button_LabelIndex(PushButton* btn, int16_t index) {
 }
 #else
 void xbtnpush_Get_Button_Name(PushButton* btn, char* out) {
-	if (btn->name)
-		strcpy(out, btn->name);
-	else
+	if (btn->name) {
+		strcpy(out, (const char*)xmemhdl_Lock_Handle(btn->name));
+		xmemhdl_Unlock_Handle(btn->name);
+	} else {
 		*out = '\0';
+	}
 }
 
 #endif

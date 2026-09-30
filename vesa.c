@@ -87,9 +87,9 @@ static uint16_t xw_physical_video_mode(uint16_t mode) {
 		xsurface_Select_Surface_Set(set);
 	else
 #endif
-		xbitmap_Set_VGA_Compatibility_Mode(low_resolution,
-										   low_resolution ? LANDRU_VGA_WIDTH : LANDRU_SCREEN_WIDTH,
-										   low_resolution ? LANDRU_VGA_HEIGHT : LANDRU_SCREEN_HEIGHT);
+		xbm_Set_VGA_Compatibility_Mode(low_resolution,
+									   low_resolution ? LANDRU_VGA_WIDTH : LANDRU_SCREEN_WIDTH,
+									   low_resolution ? LANDRU_VGA_HEIGHT : LANDRU_SCREEN_HEIGHT);
 	return LANDRU_VESA_SVGA;
 }
 #endif
@@ -144,7 +144,7 @@ bool landru_port_Set_Initial_Video_Backend(LandruPortVideoBackend backend) {
 void* xvesa_Get_Vesa_Mode_Struct(void) { return NULL; }
 
 // FUNCTION: TIE98 0x4A41C0
-void xbitmap_Set_VGA_Compatibility_Mode(int enabled, int logical_width, int logical_height) {
+void xbm_Set_VGA_Compatibility_Mode(int enabled, int logical_width, int logical_height) {
 	landru_video_flags_gbl = enabled ? LANDRU_VIDEO_VGA_COMPAT : 0;
 	landru_logical_width_gbl = (int16_t)logical_width;
 	landru_logical_height_gbl = (int16_t)logical_height;
