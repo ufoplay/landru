@@ -16,15 +16,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-// GLOBAL: TIE 0xFBB80
+// GLOBAL: TIE95 0xFBB80
 static ActorType* actor_type_gbl;
-// GLOBAL: TIE 0xD2C1C
+// GLOBAL: TIE95 0xD2C1C
 static Actor* actor_list_gbl;
-// GLOBAL: TIE 0xD2C22
+// GLOBAL: TIE95 0xD2C22
 static bool actor_module_gbl;
-// GLOBAL: TIE 0xFBB84
+// GLOBAL: TIE95 0xFBB84
 static bool refresh_actors_gbl;
-// GLOBAL: TIE 0xD2C20
+// GLOBAL: TIE95 0xD2C20
 static bool zplane_build_gbl;
 
 /* --- Module lifecycle --- */

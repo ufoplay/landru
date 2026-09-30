@@ -6,7 +6,7 @@
 #include <landru/fourcc.h>
 #include <landru/paint.h>
 
-// GLOBAL: TIE 0xD2F74
+// GLOBAL: TIE95 0xD2F74
 bool custom_actor_module_gbl = false;
 
 void xactcust_Create_Custom_Actor_Module(void) {

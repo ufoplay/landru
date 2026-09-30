@@ -14,7 +14,7 @@
 #include "binio.h"
 #include <landru/fourcc.h>
 
-// GLOBAL: TIE 0xD3024
+// GLOBAL: TIE95 0xD3024
 static bool text_button_module_gbl;
 
 void xbtntext_Create_Text_Button_Module(void) {

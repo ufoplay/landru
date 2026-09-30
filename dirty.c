@@ -4,32 +4,32 @@
 #include <landru/dirty.h>
 #include <landru/rect.h>
 
-// GLOBAL: TIE 0xD2F34
+// GLOBAL: TIE95 0xD2F34
 static bool dirty_module_gbl;
-// GLOBAL: TIE 0xFBCBC
+// GLOBAL: TIE95 0xFBCBC
 static Rect* dirty_list_gbl[2];
-// GLOBAL: TIE 0xFBCB8
+// GLOBAL: TIE95 0xFBCB8
 static int16_t num_dirty_rects_gbl[2];
-// GLOBAL: TIE 0xFBCB4
+// GLOBAL: TIE95 0xFBCB4
 static int16_t master_rect_used_gbl[2];
-// GLOBAL: TIE 0xFBCC8
+// GLOBAL: TIE95 0xFBCC8
 static Rect* master_list_gbl;
-// GLOBAL: TIE 0xFBCCA
+// GLOBAL: TIE95 0xFBCCA
 static int16_t num_master_rects_gbl;
-// GLOBAL: TIE 0xFBCD0
+// GLOBAL: TIE95 0xFBCD0
 static Rect* working_list_gbl;
-// GLOBAL: TIE 0xFBCC2
+// GLOBAL: TIE95 0xFBCC2
 static int16_t num_working_rects_gbl;
-// GLOBAL: TIE 0xFBCC0
+// GLOBAL: TIE95 0xFBCC0
 static int16_t cur_working_rect_gbl;
-// GLOBAL: TIE 0xFBCC6
+// GLOBAL: TIE95 0xFBCC6
 static int16_t cur_dirty_rect_gbl;
 static int16_t cur_dirty_list_gbl;
-// GLOBAL: TIE 0xFBCD2
+// GLOBAL: TIE95 0xFBCD2
 static int16_t max_dirty_rects_gbl;
-// GLOBAL: TIE 0xFBCCE
+// GLOBAL: TIE95 0xFBCCE
 static int16_t merge_dirty_lists_gbl;
-// GLOBAL: TIE 0xFBCC4
+// GLOBAL: TIE95 0xFBCC4
 static int16_t disable_dirty_lists_gbl;
 
 void xdirty_Create_Dirty_List_Module(int16_t max_rects) {

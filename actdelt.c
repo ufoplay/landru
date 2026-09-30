@@ -15,7 +15,7 @@
 
 #include "host_internal.h"
 
-// GLOBAL: TIE 0xD2F70
+// GLOBAL: TIE95 0xD2F70
 static bool delta_actor_module_gbl = false;
 #ifndef LANDRU_MODERN
 static Actor* scaled_svga_warnings[32];

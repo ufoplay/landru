@@ -7,11 +7,11 @@
 #include <landru/sound.h>
 #include <landru/view.h>
 
-// GLOBAL: TIE 0xD2F68
+// GLOBAL: TIE95 0xD2F68
 ViewStruct* view_default_gbl;
-// GLOBAL: TIE 0xD2F64
+// GLOBAL: TIE95 0xD2F64
 ViewStruct* view_gbl;
-// GLOBAL: TIE 0xD2F6C
+// GLOBAL: TIE95 0xD2F6C
 bool view_module_gbl;
 
 void xview_Create_View_Module(void) {

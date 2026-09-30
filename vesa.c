@@ -9,7 +9,7 @@
 #include <landru/surface.h>
 #include <landru/vesa.h>
 
-#include "host_internal.h"
+#include "host_video.h"
 #include "vesa_internal.h"
 
 /*
@@ -21,13 +21,15 @@
  */
 
 /* Globals */
-// GLOBAL: TIE 0xFBB7A, TIE98 0x6B0DC2
+// GLOBAL: TIE95 0xFBB7A
+// GLOBAL: TIE98 0x6B0DC2
 int16_t vesa_w_gbl = 320;
 // GLOBAL: TIE98 0x6B0DC0
 int16_t vesa_h_gbl = 200;
 // GLOBAL: TIE98 0x6B0DC4
 int16_t vesa_bpsl_gbl = 320;
-// GLOBAL: TIE 0xFBB40, TIE98 0x4F4420
+// GLOBAL: TIE95 0xFBB40
+// GLOBAL: TIE98 0x4F4420
 uint8_t* vesa_buff_gbl;
 // GLOBAL: TIE98 0x58B2A8
 Rect vesa_rect;
@@ -137,7 +139,8 @@ bool landru_port_Set_Initial_Video_Backend(LandruPortVideoBackend backend) {
 
 /* --- Module lifecycle --- */
 
-// FUNCTION: TIE 0x8FF40, TIE98 0x4A16E0
+// FUNCTION: TIE95 0x8FF40
+// FUNCTION: TIE98 0x4A16E0
 void* xvesa_Get_Vesa_Mode_Struct(void) { return NULL; }
 
 // FUNCTION: TIE98 0x4A41C0
@@ -169,7 +172,8 @@ void xvesa_Set_Linear_Buffer_Size(uint32_t size_bytes) { vesa_linear_buffer_size
 /* The embedding application owns presentation. Landru only allocates and
  * updates the 8bpp framebuffer. Mode changes update its dimensions in place. */
 
-// FUNCTION: TIE 0x8FF48, TIE98 0x4A16F0
+// FUNCTION: TIE95 0x8FF48
+// FUNCTION: TIE98 0x4A16F0
 void xvesa_Create_Vesa_Module(uint16_t mode) {
 	if (vesa_port_initial_backend_set_gbl)
 		vesa_port_backend_gbl = vesa_port_initial_backend_gbl;
@@ -185,7 +189,8 @@ void xvesa_Create_Vesa_Module(uint16_t mode) {
 	(void)vesa_port_Set_Software_Mode(mode);
 }
 
-// FUNCTION: TIE 0x9008C, TIE98 0x4A1710
+// FUNCTION: TIE95 0x9008C
+// FUNCTION: TIE98 0x4A1710
 void xvesa_Destroy_VESA_Module(void) {
 	/* MODERN ADAPTATION: releases the host storage owned by the Landru module. */
 	free(vesa_port_software_buffer_gbl);
@@ -275,7 +280,8 @@ int16_t xvesa_Set_VESA_Mode_Internal(uint16_t mode) {
 	return 0;
 }
 
-// FUNCTION: TIE 0x900C0, TIE98 0x4A1720
+// FUNCTION: TIE95 0x900C0
+// FUNCTION: TIE98 0x4A1720
 void xvesa_Enter_VESA_Mode(uint16_t mode) { (void)xvesa_Set_VESA_Mode_Internal(mode); }
 
 /* RECOVERY HELPER: the TIE98 XVESA functions repeat this direct-surface
@@ -308,9 +314,11 @@ void xvesa_End_Video_Access(bool direct_surface) {
 void xvesa_Erase_Video(uint8_t color) {
 	LandruVideoTarget target;
 	const bool direct_surface = xvesa_Begin_Video_Access(&target);
+	int16_t y;
+
 	if (!target.pixels)
 		return;
-	for (int16_t y = 0; y < target.height; y++)
+	for (y = 0; y < target.height; y++)
 		memset(target.pixels + (size_t)y * target.stride, color, (size_t)target.width);
 	xsurface_Mark_Active_Video_Dirty();
 	xvesa_End_Video_Access(direct_surface);
@@ -330,16 +338,18 @@ int xvesa_Copy_Bitmap_Clip_To_Video(BitmapStruct* bm, int16_t x, int16_t y) {
 	int16_t dx = x - src.left;
 	int16_t dy = y - src.top;
 
+	Rect dst;
+	Rect r;
+
 	if (!xrect_Clip_Rect(&src, &bm->clip))
 		return 0;
 
-	Rect dst;
 	xrect_Copy_Rect(&dst, &src);
 	xrect_Offset_Rect(&dst, dx - src.left, dy - src.top);
 
 	if (!xsurface_Get_Active_Video_Target(&target))
 		return 0;
-	Rect r;
+
 	xrect_Copy_Rect(&r, &dst);
 	if (!xrect_Clip_Rect(&r, &target.bounds))
 		return 0;
@@ -357,16 +367,18 @@ int xvesa_Copy_Bitmap_Clip_To_Video(BitmapStruct* bm, int16_t x, int16_t y) {
 int xvesa_Copy_Bitmap_Portion_To_Video(BitmapStruct* bm, Rect* rect, int16_t x, int16_t y) {
 	LandruVideoTarget target;
 	Rect src = *rect;
+	Rect dst;
+	Rect r;
+
 	if (!xrect_Clip_Rect(&src, &bm->clip))
 		return 0;
 
-	Rect dst;
 	xrect_Copy_Rect(&dst, &src);
 	xrect_Offset_Rect(&dst, x - rect->left, y - rect->top);
 
 	if (!xsurface_Get_Active_Video_Target(&target))
 		return 0;
-	Rect r;
+
 	xrect_Copy_Rect(&r, &dst);
 	if (!xrect_Clip_Rect(&r, &target.bounds))
 		return 0;
@@ -384,19 +396,22 @@ int xvesa_Copy_Bitmap_Portion_To_Video(BitmapStruct* bm, Rect* rect, int16_t x, 
 int xvesa_Copy_Video_Portion_To_Bitmap(BitmapStruct* bm, Rect* rect, int16_t x, int16_t y) {
 	LandruVideoTarget target;
 	Rect offset_rect = *rect;
+	Rect src;
+	Rect dst;
+	Rect r;
+
 	xrect_Offset_Rect(&offset_rect, x - rect->left, y - rect->top);
 
-	Rect src = offset_rect;
+	src = offset_rect;
 	if (!xrect_Clip_Rect(&src, &bm->clip))
 		return 0;
 
-	Rect dst;
 	xrect_Copy_Rect(&dst, &src);
 	xrect_Offset_Rect(&dst, rect->left - offset_rect.left, rect->top - offset_rect.top);
 
 	if (!xsurface_Get_Active_Video_Target(&target))
 		return 0;
-	Rect r;
+
 	xrect_Copy_Rect(&r, &dst);
 	if (!xrect_Clip_Rect(&r, &target.bounds))
 		return 0;
@@ -414,18 +429,23 @@ int xvesa_Copy_Video_Portion_To_Bitmap(BitmapStruct* bm, Rect* rect, int16_t x, 
 void xvesa_Copy_Bitmap_Video(BitmapStruct* bm, Rect* src, int16_t dst_x, int16_t dst_y, int16_t to_video) {
 	LandruVideoTarget target;
 	const bool direct_surface = xvesa_Begin_Video_Access(&target);
+	int16_t width;
+	int16_t lines;
+	uint8_t* bm_ptr;
+	uint8_t* fb_ptr;
+
 	if (!target.pixels)
 		return;
 
-	int16_t width = src->right - src->left;
-	int16_t lines = src->bottom - src->top;
+	width = src->right - src->left;
+	lines = src->bottom - src->top;
 	if (width <= 0 || lines <= 0) {
 		xvesa_End_Video_Access(direct_surface);
 		return;
 	}
 
-	uint8_t* bm_ptr = bm_pixels(bm) + src->top * bm->w + src->left;
-	uint8_t* fb_ptr = target.pixels + dst_y * target.stride + dst_x;
+	bm_ptr = bm_pixels(bm) + src->top * bm->w + src->left;
+	fb_ptr = target.pixels + dst_y * target.stride + dst_x;
 
 	if (to_video) {
 		xvesa_Copy_Bitmap_Video_Data(bm, fb_ptr, bm_ptr, lines, width, target.stride, bm->w);
@@ -440,8 +460,12 @@ void xvesa_Copy_Bitmap_Video(BitmapStruct* bm, Rect* src, int16_t dst_x, int16_t
 void xvesa_Copy_Bitmap_Video_Data(BitmapStruct* bm, uint8_t* dst, uint8_t* src, int16_t lines, int16_t width,
 								  int16_t dst_stride, int16_t src_stride) {
 	if (bm->flags & 1) {
-		for (int16_t y = 0; y < lines; y++) {
-			for (int16_t x = 0; x < width; x++) {
+		int16_t y;
+
+		for (y = 0; y < lines; y++) {
+			int16_t x;
+
+			for (x = 0; x < width; x++) {
 				if (src[x])
 					dst[x] = src[x];
 			}
@@ -449,7 +473,9 @@ void xvesa_Copy_Bitmap_Video_Data(BitmapStruct* bm, uint8_t* dst, uint8_t* src, 
 			src += src_stride;
 		}
 	} else {
-		for (int16_t y = 0; y < lines; y++) {
+		int16_t y;
+
+		for (y = 0; y < lines; y++) {
 			memcpy(dst, src, width);
 			dst += dst_stride;
 			src += src_stride;
@@ -464,16 +490,18 @@ int xvesa_Copy_Diff_Bitmap_Portion_To_Video(BitmapStruct* bm, BitmapStruct* diff
 											int16_t y) {
 	LandruVideoTarget target;
 	Rect src = *rect;
+	Rect dst;
+	Rect r;
+
 	if (!xrect_Clip_Rect(&src, &bm->clip))
 		return 0;
 
-	Rect dst;
 	xrect_Copy_Rect(&dst, &src);
 	xrect_Offset_Rect(&dst, x - rect->left, y - rect->top);
 
 	if (!xsurface_Get_Active_Video_Target(&target))
 		return 0;
-	Rect r;
+
 	xrect_Copy_Rect(&r, &dst);
 	if (!xrect_Clip_Rect(&r, &target.bounds))
 		return 0;
@@ -492,27 +520,37 @@ void xvesa_Copy_Diff_Bitmap_Video(BitmapStruct* bm, BitmapStruct* diff, Rect* sr
 								  int16_t dst_y) {
 	LandruVideoTarget target;
 	const bool direct_surface = xvesa_Begin_Video_Access(&target);
+	int16_t width;
+	int16_t lines;
+	uint8_t* bm_ptr;
+	uint8_t* diff_ptr;
+	uint8_t* fb_ptr;
+	bool dirty;
+	int16_t y;
+
 	if (!target.pixels)
 		return;
 
-	int16_t width = src->right - src->left;
-	int16_t lines = src->bottom - src->top;
+	width = src->right - src->left;
+	lines = src->bottom - src->top;
 	if (width <= 0 || lines <= 0) {
 		xvesa_End_Video_Access(direct_surface);
 		return;
 	}
 
-	uint8_t* bm_ptr = bm_pixels(bm) + src->top * bm->w + src->left;
-	uint8_t* diff_ptr = bm_pixels(diff) + src->top * diff->w + src->left;
-	uint8_t* fb_ptr = target.pixels + dst_y * target.stride + dst_x;
+	bm_ptr = bm_pixels(bm) + src->top * bm->w + src->left;
+	diff_ptr = bm_pixels(diff) + src->top * diff->w + src->left;
+	fb_ptr = target.pixels + dst_y * target.stride + dst_x;
 
-	bool dirty = false;
-	for (int16_t y = 0; y < lines; y++) {
+	dirty = false;
+	for (y = 0; y < lines; y++) {
 		int16_t x = 0;
 		while (x < width) {
+			int16_t first;
+
 			while (x < width && bm_ptr[x] == diff_ptr[x])
 				++x;
-			const int16_t first = x;
+			first = x;
 			while (x < width && bm_ptr[x] != diff_ptr[x]) {
 				diff_ptr[x] = bm_ptr[x];
 				fb_ptr[x] = bm_ptr[x];
@@ -533,8 +571,12 @@ void xvesa_Copy_Diff_Bitmap_Video(BitmapStruct* bm, BitmapStruct* diff, Rect* sr
 
 // FUNCTION: TIE98 0x4C3EC0
 void xvesa_Copy_Diff_Bitmap_Data(int lines, int width, int stride, uint8_t* dst, const uint8_t* src) {
-	for (int y = 0; y < lines; y++) {
-		for (int x = 0; x < width; x++) {
+	int y;
+
+	for (y = 0; y < lines; y++) {
+		int x;
+
+		for (x = 0; x < width; x++) {
 			if (src[x] != dst[x])
 				dst[x] = src[x];
 		}

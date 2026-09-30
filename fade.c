@@ -1,3 +1,4 @@
+#include <landru/host_timing.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,9 +18,9 @@
 
 #include "render_internal.h"
 
-// GLOBAL: TIE 0xD2F54
+// GLOBAL: TIE95 0xD2F54
 static Fade* fade_gbl;
-// GLOBAL: TIE 0xD2F58
+// GLOBAL: TIE95 0xD2F58
 static int16_t fade_module_gbl;
 
 #ifdef LANDRU_GAME_XW
@@ -259,6 +260,8 @@ static int compute_wipe_rect(Rect* r, Rect* bounds, FadeWipeMode mode, int16_t s
 }
 
 void xfade_Create_Fade_Module(void) {
+	int i;
+
 #ifdef LANDRU_GAME_XW
 	timed_text_count = 0;
 	speech_text_enabled = 1;
@@ -266,7 +269,7 @@ void xfade_Create_Fade_Module(void) {
 #endif
 	fade_gbl = xmemptr_Alloc_System_Pointer(sizeof(Fade));
 	memset(fade_gbl, 0, sizeof(Fade));
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 		fade_gbl->chan_mode[i] = FADE_WIPE_NONE;
 	fade_gbl->full_mode = FADE_WIPE_NONE;
 	fade_gbl->color_mode = FADE_COLOR_NONE;
@@ -356,11 +359,20 @@ static uint32_t fade_present_serial_gbl;
 
 // FUNCTION: TIE98 0x4B82F0
 void xfade_Fade_To_Video_Palette(int32_t current_time, int32_t end_time) {
+	bool should_fade;
+	int16_t step;
+	int16_t total;
+	int16_t half;
+	int16_t frac;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+
 	if (!fade_gbl->color_mode)
 		return;
 
 	/* Delay/sustain gating */
-	bool should_fade = false;
+	should_fade = false;
 	if (fade_gbl->color_sustain) {
 		if (current_time == end_time) {
 			if (fade_gbl->color_delay)
@@ -380,13 +392,13 @@ void xfade_Fade_To_Video_Palette(int32_t current_time, int32_t end_time) {
 	if (!should_fade)
 		return;
 
-	int16_t step = fade_gbl->color_step;
-	int16_t total = fade_gbl->color_total;
-	int16_t half = total / 2;
-	int16_t frac;
-	uint8_t r = fade_gbl->fade_red;
-	uint8_t g = fade_gbl->fade_green;
-	uint8_t b = fade_gbl->fade_blue;
+	step = fade_gbl->color_step;
+	total = fade_gbl->color_total;
+	half = total / 2;
+
+	r = fade_gbl->fade_red;
+	g = fade_gbl->fade_green;
+	b = fade_gbl->fade_blue;
 
 	switch (fade_gbl->color_mode) {
 		case FADE_COLOR_CROSSFADE:
@@ -448,13 +460,15 @@ void xfade_Fade_To_Video_Palette(int32_t current_time, int32_t end_time) {
 // FUNCTION: TIE98 0x4B8810
 void xfade_Fade_Copy_To_Video(Rect* bounds, FadeWipeMode mode, int16_t step, int16_t total,
 							  int16_t is_not_last) {
+	int is_special;
+
 	Rect r;
 	int16_t left, top;
 
 	if (xrect_Empty_Rect(bounds))
 		return;
 
-	int is_special = compute_wipe_rect(&r, bounds, mode, step, total, is_not_last, &left, &top);
+	is_special = compute_wipe_rect(&r, bounds, mode, step, total, is_not_last, &left, &top);
 
 	if (!xrect_Empty_Rect(&r)) {
 		if (mode >= FADE_WIPE_RIGHT) {
@@ -672,9 +686,10 @@ static void fade_task_end(void* self) {
 }
 
 static const LandruTaskVtable fade_task_vt = {
-	.step = fade_task_step,
-	.end = fade_task_end,
-	.next_wake_delay_us = fade_task_next_wake_delay_us,
+	fade_task_step,
+	fade_task_end,
+	NULL,
+	fade_task_next_wake_delay_us,
 };
 
 /* Push a FadeTask onto the tie_core task stack. Caller-task yields
@@ -694,16 +709,20 @@ static const LandruTaskVtable fade_task_vt = {
 int xfade_Push_Fade_To_Video_Screen_Task(const Rect* clip, int16_t is_dialog, FadeEndCursorAction end_cursor,
 										 bool force_refresh_view) {
 	int32_t now = xview_Get_View_Time();
+	int i;
 	int32_t start_time = now;
 	int32_t end_time = now;
+
+	bool sustained;
+	FadeTask* t;
 
 	if (xfade_Is_Fade_Step(fade_gbl->full_mode, fade_gbl->full_sustain, fade_gbl->full_delay, now, now)) {
 		if (fade_gbl->full_sustain)
 			end_time = now + fade_gbl->full_total;
-		for (int i = 0; i < 4; i++)
+		for (i = 0; i < 4; i++)
 			fade_gbl->chan_mode[i] = FADE_WIPE_NONE;
 	} else {
-		for (int i = 0; i < 4; i++) {
+		for (i = 0; i < 4; i++) {
 			if (xfade_Is_Fade_Step(fade_gbl->chan_mode[i], fade_gbl->chan_sustain[i], fade_gbl->chan_delay[i],
 								   start_time, start_time) &&
 				fade_gbl->chan_sustain[i]) {
@@ -713,9 +732,9 @@ int xfade_Push_Fade_To_Video_Screen_Task(const Rect* clip, int16_t is_dialog, Fa
 		}
 	}
 
-	bool sustained = (end_time > start_time);
+	sustained = (end_time > start_time);
 
-	FadeTask* t = (FadeTask*)landru_task_push(&fade_task_vt);
+	t = (FadeTask*)landru_task_push(&fade_task_vt);
 	if (!t)
 		return 0;
 #ifdef LANDRU_GAME_XW
@@ -735,16 +754,17 @@ int xfade_Push_Fade_To_Video_Screen_Task(const Rect* clip, int16_t is_dialog, Fa
 }
 
 void xfade_Calc_Fade_Lock_Time(int32_t* lock_end, int32_t* lock_start) {
+	int i;
 	int32_t now = xview_Get_View_Time();
 	int32_t latest_end = now;
 
 	if (fade_gbl->full_mode && !fade_gbl->full_delay) {
 		if (fade_gbl->full_sustain)
 			latest_end = now + fade_gbl->full_total;
-		for (int i = 0; i < 4; i++)
+		for (i = 0; i < 4; i++)
 			fade_gbl->chan_mode[i] = FADE_WIPE_NONE;
 	} else {
-		for (int i = 0; i < 4; i++) {
+		for (i = 0; i < 4; i++) {
 			if (fade_gbl->chan_mode[i] && !fade_gbl->chan_delay[i] && fade_gbl->chan_sustain[i]) {
 				if (now + fade_gbl->chan_total[i] > latest_end)
 					latest_end = now + fade_gbl->full_total;
@@ -769,21 +789,23 @@ bool xfade_Is_Fade_Delay_Step(FadeWipeMode mode, int16_t sustain, int32_t cur, i
 }
 
 LandruBoolResult xfade_Fade_Active(void) {
+	int i;
 	if (fade_gbl->full_mode && !fade_gbl->full_delay)
 		return true;
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 		if (fade_gbl->chan_mode[i] && !fade_gbl->chan_delay[i])
 			return true;
 	return false;
 }
 
 bool xfade_Trans_Fade_Active(void) {
+	int i;
 	if (fade_gbl->full_mode && !fade_gbl->full_delay) {
 		if (fade_gbl->full_mode > FADE_WIPE_SNAP_OFF || fade_gbl->color_mode != FADE_COLOR_PAL_TO_PAL ||
 			fade_gbl->full_sustain)
 			return true;
 	}
-	for (int i = 0; i < 4; i++) {
+	for (i = 0; i < 4; i++) {
 		if (fade_gbl->chan_mode[i] && !fade_gbl->chan_delay[i]) {
 			if (fade_gbl->chan_mode[i] > FADE_WIPE_SNAP_OFF ||
 				fade_gbl->color_mode != FADE_COLOR_PAL_TO_PAL || fade_gbl->chan_sustain[i])
@@ -802,6 +824,15 @@ bool xfade_Trans_Fade_Active(void) {
 void xfade_emit_render_state(void) {
 	LandruFadeRenderState state = { 0 };
 	LandruFadeRenderState* out = &state;
+	uint8_t cm;
+	int16_t step;
+	int16_t total;
+	int source_remaining_q8;
+	bool freeze;
+	uint8_t target_r;
+	uint8_t target_g;
+	uint8_t target_b;
+
 	out->kind = LANDRU_FADE_NONE;
 	out->source_factor = 255;
 	out->r = out->g = out->b = 0;
@@ -809,9 +840,9 @@ void xfade_emit_render_state(void) {
 
 	if (!fade_module_gbl || !fade_gbl)
 		goto publish;
-	uint8_t cm = fade_gbl->color_mode;
-	int16_t step = fade_gbl->color_step;
-	int16_t total = fade_gbl->color_total;
+	cm = fade_gbl->color_mode;
+	step = fade_gbl->color_step;
+	total = fade_gbl->color_total;
 	if (cm == FADE_COLOR_NONE || total <= 0)
 		goto publish;
 	if (step < 0)
@@ -822,11 +853,10 @@ void xfade_emit_render_state(void) {
 	/* Fraction of the source frame that remains, expressed 0..256 to match
 	 * the engine's fractional
 	 * arithmetic before scaling to 0..255. */
-	int source_remaining_q8;
-	bool freeze;
-	uint8_t target_r = fade_gbl->fade_red;
-	uint8_t target_g = fade_gbl->fade_green;
-	uint8_t target_b = fade_gbl->fade_blue;
+
+	target_r = fade_gbl->fade_red;
+	target_g = fade_gbl->fade_green;
+	target_b = fade_gbl->fade_blue;
 
 	switch (cm) {
 		case FADE_COLOR_PAL_TO_PAL:

@@ -102,6 +102,7 @@ set(LANDRU_HEADERS
     include/landru/font.h
     include/landru/fourcc.h
     include/landru/host.h
+    include/landru/host_timing.h
     include/landru/inpattr.h
     include/landru/inpcall.h
     include/landru/input.h
@@ -123,6 +124,7 @@ set(LANDRU_HEADERS
     include/landru/stream.h
     include/landru/style.h
     include/landru/surface.h
+    include/landru/presentation.h
     include/landru/task.h
     include/landru/timer.h
     include/landru/vesa.h
@@ -132,6 +134,7 @@ set(LANDRU_HEADERS
     binio.h
     canvas_internal.h
     dialog_internal.h
+    host_video.h
     host_internal.h
     render_internal.h
     timer_internal.h

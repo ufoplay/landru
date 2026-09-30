@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <landru/host.h>
+#include <landru/file.h>
 
 typedef struct ResEntry ResEntry;
 typedef struct ResFile ResFile;

@@ -11,7 +11,7 @@
 #include <landru/remap.h>
 #include <landru/style.h>
 
-// GLOBAL: TIE 0xD2F38
+// GLOBAL: TIE95 0xD2F38
 static Actor* style_actor_gbl;
 
 int16_t xstyle_Get_Style_Base_Color(void) { return xremap_Get_Remap(REMAP_GRAY_3); }

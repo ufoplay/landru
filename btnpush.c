@@ -9,7 +9,7 @@
 #include <landru/rect.h>
 #include <landru/style.h>
 
-// GLOBAL: TIE 0xD3018
+// GLOBAL: TIE95 0xD3018
 static bool push_button_module_gbl;
 
 void xbtnpush_Create_Button_Module(void) {

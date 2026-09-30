@@ -1,3 +1,4 @@
+#include <landru/host_timing.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,17 +12,17 @@
 #include "host_internal.h"
 
 static bool s_palette_module = false;
-// GLOBAL: TIE 0xD2C4C
+// GLOBAL: TIE95 0xD2C4C
 static Palette* screen_pal_gbl = NULL;
-// GLOBAL: TIE 0xD2C50
+// GLOBAL: TIE95 0xD2C50
 static Palette* src_pal_gbl = NULL;
-// GLOBAL: TIE 0xD2C54
+// GLOBAL: TIE95 0xD2C54
 static Palette* dst_pal_gbl = NULL;
-// GLOBAL: TIE 0xD2C48
+// GLOBAL: TIE95 0xD2C48
 static Palette* work_pal_gbl = NULL;
-// GLOBAL: TIE 0xD2C58
+// GLOBAL: TIE95 0xD2C58
 static Palette* video_pal_gbl = NULL;
-// GLOBAL: TIE 0xD2C44
+// GLOBAL: TIE95 0xD2C44
 static Palette* first_palette_gbl = NULL;
 
 /* XPAL_Set_VGA_Palette waits for a mode-13h retrace before every changed

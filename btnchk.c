@@ -14,7 +14,7 @@
 #include "binio.h"
 #include <landru/fourcc.h>
 
-// GLOBAL: TIE 0xD3028
+// GLOBAL: TIE95 0xD3028
 static bool check_button_module_gbl;
 
 void xbtnchk_Create_Check_Button_Module(void) {

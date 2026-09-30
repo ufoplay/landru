@@ -1,3 +1,4 @@
+#include <landru/host_timing.h>
 #include <stddef.h>
 
 #include <landru/canvas.h>
@@ -21,19 +22,19 @@
 #include "dialog_internal.h"
 #include "host_internal.h"
 
-// GLOBAL: TIE 0xD2F5C
+// GLOBAL: TIE95 0xD2F5C
 static int16_t dialog_module_gbl;
-// GLOBAL: TIE 0xD2F5E
+// GLOBAL: TIE95 0xD2F5E
 static int16_t dlg_exit_gbl;
 static int16_t dlg_back_gbl;
-// GLOBAL: TIE 0xD3016
+// GLOBAL: TIE95 0xD3016
 static int16_t dlg_enable_gbl;
 #ifndef LANDRU_GAME_XW
-// GLOBAL: TIE 0xFBCD4
+// GLOBAL: TIE95 0xFBCD4
 static DialogUpdateFunc dlg_update_gbl;
-// GLOBAL: TIE 0xFBCD8
+// GLOBAL: TIE95 0xFBCD8
 static Input* dialog_list_gbl;
-// GLOBAL: TIE 0xFBCDC
+// GLOBAL: TIE95 0xFBCDC
 static int16_t refresh_dialogs_gbl;
 
 #endif

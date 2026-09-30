@@ -1,3 +1,4 @@
+#include <landru/host_timing.h>
 #include <landru/task.h>
 #include <string.h>
 

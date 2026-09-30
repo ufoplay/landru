@@ -4,20 +4,20 @@
 
 #include "host_internal.h"
 
-// GLOBAL: TIE 0xD2F4A
+// GLOBAL: TIE95 0xD2F4A
 int16_t assertion_level;
 
-// GLOBAL: TIE 0xD2F48
+// GLOBAL: TIE95 0xD2F48
 static int16_t landru_exit_gbl = -1;
-// GLOBAL: TIE 0xD2F46
+// GLOBAL: TIE95 0xD2F46
 static int16_t landru_err_gbl = 1;
-// GLOBAL: TIE 0xD2F44
+// GLOBAL: TIE95 0xD2F44
 static int16_t landru_escape_gbl;
-// GLOBAL: TIE 0xD2F40
+// GLOBAL: TIE95 0xD2F40
 static LandruEscapeFunc landru_escfunc_gbl;
-// GLOBAL: TIE 0xD2F3C
+// GLOBAL: TIE95 0xD2F3C
 static LandruBailFunc landru_bailfunc_gbl;
-// GLOBAL: TIE 0xD2F4C
+// GLOBAL: TIE95 0xD2F4C
 static int16_t assertion_fired;
 
 /* --- Bail --- */

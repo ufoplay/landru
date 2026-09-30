@@ -43,15 +43,7 @@ bool xsurface_Take_Active_Video_Dirty(void);
 uint32_t xsurface_Get_Presentation_Generation(void);
 
 #ifdef LANDRU_MODERN
-/* Opt in before surface creation. All views are borrowed until publication,
- * invalidation, palette changes or module destruction; use on the owner thread. */
-typedef struct LandruPresentedFrame {
-	const uint8_t* pixels;
-	const uint8_t* palette;
-	int width, height, stride;
-	int aspect_numerator, aspect_denominator;
-	uint64_t generation;
-} LandruPresentedFrame;
+typedef struct LandruPresentedFrame LandruPresentedFrame;
 
 bool landru_port_Set_Native_Vga_Presentation(bool enabled);
 bool xsurface_Uses_Native_Vga_Presentation(void);

@@ -22,12 +22,12 @@
 
 #include "render_internal.h"
 
-// GLOBAL: TIE 0xD2FFC
+// GLOBAL: TIE95 0xD2FFC
 Film* first_film_gbl;
 int16_t film_zplane_gbl;
-// GLOBAL: TIE 0xD3002
+// GLOBAL: TIE95 0xD3002
 int16_t film_color_fade_gbl;
-// GLOBAL: TIE 0xD3000
+// GLOBAL: TIE95 0xD3000
 int16_t film_fade_gbl;
 
 Film* xfilm_Ask_Film_List(void) { return first_film_gbl; }

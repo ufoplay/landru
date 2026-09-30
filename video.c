@@ -10,8 +10,9 @@ int vga_compat_slow_blit_gbl;
 // FUNCTION: TIE98 0x4C1BB0
 static void xvideo_Copy_Indexed_Rect_1x(uint8_t* dst, int dst_stride, const uint8_t* src, int width,
 										int height, int src_stride, int dst_x, int dst_y) {
+	int y;
 	uint8_t* output = dst + dst_x + dst_stride * dst_y;
-	for (int y = 0; y < height; ++y) {
+	for (y = 0; y < height; ++y) {
 		memcpy(output, src, (size_t)width);
 		output += dst_stride;
 		src += src_stride;
@@ -21,11 +22,12 @@ static void xvideo_Copy_Indexed_Rect_1x(uint8_t* dst, int dst_stride, const uint
 // FUNCTION: TIE98 0x4C1D80
 static void xvideo_Copy_Indexed_Rect_2x(uint8_t* dst, int dst_stride, const uint8_t* src, int width,
 										int height, int src_stride, int dst_x, int dst_y) {
+	int y, x;
 	uint8_t* output = dst + 2 * dst_x + 2 * dst_stride * dst_y;
-	for (int y = 0; y < height; ++y) {
+	for (y = 0; y < height; ++y) {
 		uint8_t* upper = output;
 		uint8_t* lower = output + dst_stride;
-		for (int x = 0; x < width; ++x) {
+		for (x = 0; x < width; ++x) {
 			upper[2 * x] = src[x];
 			upper[2 * x + 1] = src[x];
 			lower[2 * x] = src[x];
@@ -40,8 +42,9 @@ static void xvideo_Copy_Indexed_Rect_2x(uint8_t* dst, int dst_stride, const uint
 static void xvideo_Copy_Indexed_Rect_1x_Alternate_Lines(uint8_t* dst, int dst_stride, const uint8_t* src,
 														int width, int height, int src_stride, int dst_x,
 														int dst_y) {
+	int y;
 	uint8_t* output = dst + dst_x + dst_stride * dst_y;
-	for (int y = 0; y < height; ++y) {
+	for (y = 0; y < height; ++y) {
 		memcpy(output, src, (size_t)width);
 		output += 2 * dst_stride;
 		src += src_stride;
@@ -51,11 +54,12 @@ static void xvideo_Copy_Indexed_Rect_1x_Alternate_Lines(uint8_t* dst, int dst_st
 // FUNCTION: TIE98 0x4C22E0
 static void xvideo_Clear_2x_Vertical_Borders(uint8_t* dst, int dst_stride, int dst_height, int width,
 											 int height) {
+	int y;
 	const int first_row = (dst_height - 2 * height) >> 1;
 	const int last_row = first_row + 2 * height;
-	for (int y = 0; y < first_row; ++y)
+	for (y = 0; y < first_row; ++y)
 		memset(dst + y * dst_stride, 0, (size_t)(2 * width));
-	for (int y = last_row; y < dst_height; ++y)
+	for (y = last_row; y < dst_height; ++y)
 		memset(dst + y * dst_stride, 0, (size_t)(2 * width));
 }
 
@@ -63,9 +67,10 @@ static void xvideo_Clear_2x_Vertical_Borders(uint8_t* dst, int dst_stride, int d
 static void xvideo_Copy_Indexed_Rect_Repeat_Every_Sixth_Line(uint8_t* dst, int dst_stride, const uint8_t* src,
 															 int width, int height, int src_stride, int dst_x,
 															 int dst_y) {
+	int y;
 	int line_counter = dst_y % 6;
 	uint8_t* output = dst + dst_x + dst_stride * (dst_y + dst_y / 6);
-	for (int y = 0; y < height; ++y) {
+	for (y = 0; y < height; ++y) {
 		memcpy(output, src, (size_t)width);
 		output += dst_stride;
 		if (++line_counter == 6) {
@@ -81,9 +86,10 @@ static void xvideo_Copy_Indexed_Rect_Repeat_Every_Sixth_Line(uint8_t* dst, int d
 static void xvideo_Copy_Indexed_Rect_2x_Alternate_Lines(uint8_t* dst, int dst_stride, const uint8_t* src,
 														int width, int height, int src_stride, int dst_x,
 														int dst_y) {
+	int y, x;
 	uint8_t* output = dst + 2 * dst_x + 2 * dst_stride * dst_y;
-	for (int y = 0; y < height; ++y) {
-		for (int x = 0; x < width; ++x) {
+	for (y = 0; y < height; ++y) {
+		for (x = 0; x < width; ++x) {
 			output[2 * x] = src[x];
 			output[2 * x + 1] = src[x];
 		}
@@ -96,11 +102,12 @@ static void xvideo_Copy_Indexed_Rect_2x_Alternate_Lines(uint8_t* dst, int dst_st
 static void xvideo_Copy_Indexed_Rect_2x_Repeat_Every_Third_Line(uint8_t* dst, int dst_stride,
 																const uint8_t* src, int width, int height,
 																int src_stride, int dst_x, int dst_y) {
+	int y, repeat, x;
 	int line_counter = 2 * dst_y % 6;
 	uint8_t* output = dst + 2 * dst_x + dst_stride * (2 * dst_y + 2 * dst_y / 6);
-	for (int y = 0; y < height; ++y) {
-		for (int repeat = 0; repeat < 2; ++repeat) {
-			for (int x = 0; x < width; ++x) {
+	for (y = 0; y < height; ++y) {
+		for (repeat = 0; repeat < 2; ++repeat) {
+			for (x = 0; x < width; ++x) {
 				output[2 * x] = src[x];
 				output[2 * x + 1] = src[x];
 			}

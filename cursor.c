@@ -19,11 +19,11 @@
 static BitmapStruct cursor_bm_gbl;
 static BitmapStruct cursor_back_gbl;
 static int16_t cursor_enable_gbl;
-// GLOBAL: TIE 0xFBC84
+// GLOBAL: TIE95 0xFBC84
 static int16_t cursor_show_gbl;
 static bool fade_cursor_gbl;
 static bool cur_redraw_gbl;
-// GLOBAL: TIE 0xFBC82
+// GLOBAL: TIE95 0xFBC82
 static uint8_t cursor_state_gbl;
 static bool cursor_module_gbl;
 static int16_t curs_hot_x, curs_hot_y;
@@ -105,6 +105,8 @@ static uint8_t wait_cursor[16][16] = {
 #endif
 
 void xcursor_Create_Cursor_Module(void) {
+	Rect rect;
+
 	xbitmap_Alloc_Trans_System_Bitmap(&cursor_bm_gbl, 32, 32);
 	xbitmap_Alloc_System_Bitmap(&cursor_back_gbl, 32, 32);
 	xbitmap_Erase_Bitmap(&cursor_bm_gbl);
@@ -122,7 +124,6 @@ void xcursor_Create_Cursor_Module(void) {
 	curs_hot_y = 0;
 	last_curs_x = xio_Mouse_X();
 	last_curs_y = xio_Mouse_Y();
-	Rect rect;
 	xrect_Set_Rect(&rect, 0, 0, 16, 16);
 	xbitmap_Set_Bitmap_Clipping(&cursor_bm_gbl, &rect);
 	xbitmap_Set_Bitmap_Clipping(&cursor_back_gbl, &rect);
@@ -212,16 +213,22 @@ void xcursor_Set_Cursor(int16_t cursorId) {
 }
 #else
 void xcursor_Set_Cursor(uint8_t cursorId) {
+	uint8_t* cursor;
+	uint8_t* dst;
+	int y;
+
 	cursor_id_gbl = cursorId;
-	uint8_t* cursor = NULL;
+	cursor = NULL;
 	if (cursorId == 0)
 		cursor = (uint8_t*)pointer_cursor;
 	else if (cursorId == 1)
 		cursor = (uint8_t*)wait_cursor;
 
-	uint8_t* dst = xbitmap_Lock_Bitmap(&cursor_bm_gbl);
-	for (int y = 0; y < 32; y++) {
-		for (int x = 0; x < 32; x++) {
+	dst = xbitmap_Lock_Bitmap(&cursor_bm_gbl);
+	for (y = 0; y < 32; y++) {
+		int x;
+
+		for (x = 0; x < 32; x++) {
 			if (y < 16 && x < 16)
 				dst[x + y * 32] = cursor ? cursor[x + y * 16] : 0;
 		}
@@ -252,6 +259,10 @@ void xcursor_Cursor_To_Screen(int16_t x, int16_t y) {
 }
 
 void xcursor_Draw_Cursor(int16_t x, int16_t y, int16_t offscreen) {
+	int16_t left;
+	int16_t top;
+	Rect rect;
+
 	if (xrect_Empty_Rect(&cursor_bm_gbl.clip) || cursor_show_gbl)
 		return;
 	if (cursor_external_presentation_gbl) {
@@ -267,9 +278,9 @@ void xcursor_Draw_Cursor(int16_t x, int16_t y, int16_t offscreen) {
 
 	last_curs_x = x;
 	last_curs_y = y;
-	int16_t left = x - curs_hot_x;
-	int16_t top = y - curs_hot_y;
-	Rect rect;
+	left = x - curs_hot_x;
+	top = y - curs_hot_y;
+
 	xrect_Set_Rect(&rect, left, top, cursor_bm_gbl.w + left, cursor_bm_gbl.h + top);
 	if (offscreen) {
 		xcanvas_Copy_Canvas_Portion_To_Bitmap(&cursor_back_gbl, &rect, 0, 0);
@@ -281,6 +292,10 @@ void xcursor_Draw_Cursor(int16_t x, int16_t y, int16_t offscreen) {
 }
 
 void xcursor_Erase_Cursor(int16_t offscreen) {
+	int16_t y;
+
+	int16_t x;
+
 	if (cursor_external_presentation_gbl)
 		return;
 	if (offscreen) {
@@ -293,8 +308,8 @@ void xcursor_Erase_Cursor(int16_t offscreen) {
 		cursor_state_gbl ^= 1;
 	}
 
-	int16_t x = last_curs_x - curs_hot_x;
-	int16_t y = last_curs_y - curs_hot_y;
+	x = last_curs_x - curs_hot_x;
+	y = last_curs_y - curs_hot_y;
 
 	if (offscreen) {
 		xcanvas_Copy_Bitmap_Clip_To_Canvas(&cursor_back_gbl, x, y);
@@ -439,12 +454,19 @@ bool xcursor_Get_Software_Cursor(LandruSoftwareCursor* out) {
 	if (!out || !cursor_module_gbl || cursor_enable_gbl != 1 || cursor_show_gbl != 0 ||
 		g_cursorDisplayCount < 0)
 		return false;
-	*out = (LandruSoftwareCursor) { &g_softwareCursorBitmap[0][0], 16, 16, g_softwareCursorDarkColorIndex,
-									g_softwareCursorBrightColorIndex };
+	out->mask = &g_softwareCursorBitmap[0][0];
+	out->width = 16;
+	out->height = 16;
+	out->dark_index = g_softwareCursorDarkColorIndex;
+	out->bright_index = g_softwareCursorBrightColorIndex;
 	return true;
 }
 
 void xcursor_Draw_Software_Cursor_At(uint8_t* surface, int pitch, int height, int mouse_x, int mouse_y) {
+	int width;
+	int rows;
+	int y;
+
 	if (!surface || pitch <= 0 || height <= 0)
 		return;
 	if (mouse_x < 0)
@@ -455,20 +477,22 @@ void xcursor_Draw_Software_Cursor_At(uint8_t* surface, int pitch, int height, in
 		mouse_x = pitch - 1;
 	if (mouse_y > height - 1)
 		mouse_y = height - 1;
-	int width = pitch - mouse_x;
+	width = pitch - mouse_x;
 	if (width > 16)
 		width = 16;
 	if (width < 0)
 		width = 0;
-	int rows = height - mouse_y;
+	rows = height - mouse_y;
 	if (rows > 16)
 		rows = 16;
 	if (rows < 0)
 		rows = 0;
 
-	for (int y = 0; y < rows; ++y) {
+	for (y = 0; y < rows; ++y) {
 		uint8_t* output = surface + pitch * (mouse_y + y) + mouse_x;
-		for (int x = 0; x < width; ++x) {
+		int x;
+
+		for (x = 0; x < width; ++x) {
 			const uint8_t cursor_pixel = g_softwareCursorBitmap[y][x];
 			if (cursor_pixel == 1)
 				output[x] = g_softwareCursorDarkColorIndex;
@@ -485,7 +509,9 @@ void xcursor_Select_Contrast_Colors(const uint8_t* rgb6_palette) {
 	int brightest_sum = 0;
 	uint8_t darkest = 0;
 	uint8_t brightest = 0;
-	for (int index = 0; index < 256; ++index) {
+	int index;
+
+	for (index = 0; index < 256; ++index) {
 		const int sum = rgb6_palette[index * 3] + rgb6_palette[index * 3 + 1] + rgb6_palette[index * 3 + 2];
 		if (sum > brightest_sum) {
 			brightest_sum = sum;

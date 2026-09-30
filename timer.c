@@ -1,3 +1,4 @@
+#include <landru/host_timing.h>
 #include <landru/io.h>
 #include <landru/timer.h>
 #include <landru/vesa.h>
@@ -9,8 +10,8 @@
 
 /* Globals */
 static int16_t timer_module_gbl;
-// GLOBAL: TIE 0xFB650
-static int32_t timer_ticks_gbl;
+// GLOBAL: TIE95 0xFB650
+int32_t timer_ticks_gbl;
 static int16_t timer_count_gbl;
 #ifdef LANDRU_GAME_XW
 static int16_t frame_rate_gbl = LANDRU_FRAME_TICKS_2;
@@ -23,7 +24,7 @@ static uint32_t elapsed_period_us = LANDRU_TIMER_TICK_US;
 static int16_t frame_rate_gbl;
 #endif
 static uint32_t frame_elapsed_ticks_gbl;
-// GLOBAL: TIE 0xD2B84
+// GLOBAL: TIE95 0xD2B84
 static int32_t time_gbl;
 
 /* --- Tick source --- */

@@ -2,10 +2,10 @@
 #include <landru/remap.h>
 #include <stdlib.h>
 
-// GLOBAL: TIE 0xFBCB0
+// GLOBAL: TIE95 0xFBCB0
 static int16_t remap_module_gbl;
 
-// GLOBAL: TIE 0xD2EE8
+// GLOBAL: TIE95 0xD2EE8
 int16_t remap_table[REMAP_COLOR_COUNT];
 
 /* 37 fixed RGB colors (8-bit): 7 grays + 6 each of red/green/blue/magenta/yellow */

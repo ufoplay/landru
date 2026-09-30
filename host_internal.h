@@ -1,6 +1,7 @@
 #ifndef LANDRU_HOST_INTERNAL_H
 #define LANDRU_HOST_INTERNAL_H
 
+#include "host_video.h"
 #include <landru/host.h>
 
 void landru_host_log(LandruLogLevel level, const char* format, ...);
@@ -32,15 +33,6 @@ uint32_t landru_host_music_type(void);
 struct Sound* landru_host_music_load(struct ResFile* resource, const char* name);
 bool landru_host_has_music_loader(void);
 void landru_host_music_release(struct Sound* sound);
-bool landru_host_has_platform_video(void);
-void landru_host_video_set_mode(uint16_t mode);
-void landru_host_video_lock(void);
-void landru_host_video_unlock(void);
-void landru_host_video_copy_to_present_surface(void);
-void landru_host_video_present(void);
-#ifdef LANDRU_MODERN
-void landru_host_video_logical_size_changed(int width, int height);
-#endif
 uint64_t landru_host_now_us(void);
 
 #endif

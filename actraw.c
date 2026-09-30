@@ -9,7 +9,7 @@
 #include <landru/rect.h>
 #include <landru/res.h>
 
-// GLOBAL: TIE 0xD336C
+// GLOBAL: TIE95 0xD336C
 static bool raw_actor_module_gbl = false;
 
 void xactraw_Create_Raw_Actor_Module(void) {

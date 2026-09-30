@@ -7,7 +7,7 @@
 #include <landru/rect.h>
 #include <landru/res.h>
 
-// GLOBAL: TIE 0xD2E70
+// GLOBAL: TIE95 0xD2E70
 static bool anim_actor_module_gbl = false;
 
 void xactanim_Create_Anim_Actor_Module(void) {

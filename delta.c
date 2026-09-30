@@ -28,9 +28,9 @@ static inline int16_t read_i16_le(const uint8_t* p) {
  * RLE control byte: bit 0 = run(1) or literal(0), bits 1-7 = count.
  */
 
-// GLOBAL: TIE 0xD3370
+// GLOBAL: TIE95 0xD3370
 static int16_t delta_clip_x_base;
-// GLOBAL: TIE 0xD3372
+// GLOBAL: TIE95 0xD3372
 static int16_t delta_clip_y_base;
 
 /* Decode one RLE line, copying pixel data to dst. Returns updated src pointer. */

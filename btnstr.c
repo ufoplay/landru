@@ -19,7 +19,7 @@
 
 #define STRING_BUF_SIZE 256
 
-// GLOBAL: TIE 0xD3020
+// GLOBAL: TIE95 0xD3020
 static bool string_button_module_gbl;
 
 void xbtnstr_Create_String_Button_Module(void) {

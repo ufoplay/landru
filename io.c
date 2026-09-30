@@ -17,51 +17,51 @@
 /* Globals */
 Rect mouse_limits_gbl;
 int16_t joy_port_gbl;
-// GLOBAL: TIE 0xD2BE2
+// GLOBAL: TIE95 0xD2BE2
 int16_t mouse_x_gbl;
-// GLOBAL: TIE 0xD2BE4
+// GLOBAL: TIE95 0xD2BE4
 int16_t mouse_y_gbl;
-// GLOBAL: TIE 0xD2BE6
+// GLOBAL: TIE95 0xD2BE6
 int16_t mouse_cursor_x_gbl;
-// GLOBAL: TIE 0xD2BE8
+// GLOBAL: TIE95 0xD2BE8
 int16_t mouse_cursor_y_gbl;
 int16_t fast_mouse_x_gbl;
 int16_t fast_mouse_y_gbl;
-// GLOBAL: TIE 0xD2BEE
+// GLOBAL: TIE95 0xD2BEE
 int16_t last_mouse_x_gbl;
-// GLOBAL: TIE 0xD2BF0
+// GLOBAL: TIE95 0xD2BF0
 int16_t last_mouse_y_gbl;
 int16_t joy_move_gbl;
 int16_t joy_xf_gbl;
 int16_t joy_yf_gbl;
-// GLOBAL: TIE 0xD2BF8
+// GLOBAL: TIE95 0xD2BF8
 int16_t down_button_gbl;
 int16_t fast_button_gbl;
 bool fast_mouse_release_gbl;
 bool fast_joy_release_gbl;
-// GLOBAL: TIE 0xD2C00
+// GLOBAL: TIE95 0xD2C00
 int16_t last_button_gbl;
-// GLOBAL: TIE 0xD2C02
+// GLOBAL: TIE95 0xD2C02
 int16_t release_button_gbl;
-// GLOBAL: TIE 0xD2C04
+// GLOBAL: TIE95 0xD2C04
 int16_t key_gbl;
-// GLOBAL: TIE 0xD2C06
+// GLOBAL: TIE95 0xD2C06
 bool ask_key_gbl;
 
-// GLOBAL: TIE 0xD2C08
+// GLOBAL: TIE95 0xD2C08
 int16_t special_key_gbl;
-// GLOBAL: TIE 0xD2C0A
+// GLOBAL: TIE95 0xD2C0A
 bool key_btn_gbl;
 int32_t cursor_time_gbl;
 /* Min PIT ticks between cursor screen updates (8 ticks @ ~250 Hz = 32ms,
  * matches the binary's data-segment value at 0xe1874). */
 int16_t cursor_rate_gbl = 8;
 LandruSystemSpeed system_speed_gbl = LANDRU_SYSTEM_SPEED_DEFAULT;
-// GLOBAL: TIE 0xD2C14
+// GLOBAL: TIE95 0xD2C14
 bool io_module_gbl;
-// GLOBAL: TIE 0xFB924
+// GLOBAL: TIE95 0xFB924
 bool mouse_exists_gbl;
-// GLOBAL: TIE 0xFB928
+// GLOBAL: TIE95 0xFB928
 int16_t joy_exists_gbl;
 #ifdef LANDRU_GAME_XW
 int16_t joy_callibrate_gbl = 0;

@@ -8,16 +8,16 @@
 #include <landru/timer.h>
 
 /* Globals */
-// GLOBAL: TIE 0xD3010
+// GLOBAL: TIE95 0xD3010
 static InputActiveState input_active_gbl;
-// GLOBAL: TIE 0xD300C
+// GLOBAL: TIE95 0xD300C
 static Input* input_user_gbl;
-// GLOBAL: TIE 0xFC0FC
+// GLOBAL: TIE95 0xFC520
 static Rect input_frame_gbl;
 static Rect input_clip_gbl;
 #ifndef LANDRU_GAME_XW
 static Input* draw_input_gbl[256];
-// GLOBAL: TIE 0xFC528
+// GLOBAL: TIE95 0xFC528
 static int16_t draw_input_index_gbl;
 #endif
 

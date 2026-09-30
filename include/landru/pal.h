@@ -45,9 +45,6 @@ struct Palette {
 };
 
 void xpal_Set_VGA_Palette(RGBStruct* pal, int16_t start, int16_t len);
-/* Delay until all changed VGA palette writes have crossed their original
- * retrace waits. UINT64_MAX means that no wait is pending. */
-uint64_t xpal_Next_VGA_Delay_Us(void);
 void xpal_Create_Palette_Module(void);
 void xpal_Destroy_Palette_Module(void);
 Palette* xpal_Ask_Palette_List(void);

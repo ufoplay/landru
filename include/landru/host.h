@@ -2,27 +2,14 @@
 #define LANDRU_HOST_H
 
 #include <landru/config.h>
+#include <landru/file.h>
 
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
-typedef void LandruFile;
 typedef void LandruDir;
-
-typedef enum LandruFileRoot {
-	LANDRU_FILE_ROOT_ASSET,
-	LANDRU_FILE_ROOT_AUXILIARY_ASSET,
-	LANDRU_FILE_ROOT_USER,
-	LANDRU_FILE_ROOT_TEMP,
-} LandruFileRoot;
-
-enum {
-	LANDRU_SEEK_SET = 0,
-	LANDRU_SEEK_CUR = 1,
-	LANDRU_SEEK_END = 2,
-};
 
 #define LANDRU_DIR_NAME_MAX 256
 

@@ -4,8 +4,22 @@
 #include <landru/config.h>
 
 #include <stdint.h>
+#include <stddef.h>
 
-#include <landru/host.h>
+typedef void LandruFile;
+
+typedef enum LandruFileRoot {
+	LANDRU_FILE_ROOT_ASSET,
+	LANDRU_FILE_ROOT_AUXILIARY_ASSET,
+	LANDRU_FILE_ROOT_USER,
+	LANDRU_FILE_ROOT_TEMP,
+} LandruFileRoot;
+
+enum {
+	LANDRU_SEEK_SET = 0,
+	LANDRU_SEEK_CUR = 1,
+	LANDRU_SEEK_END = 2,
+};
 
 /* File I/O */
 LandruFile* xfile_Open_File(LandruFileRoot root, const char* name, const char* mode);

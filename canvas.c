@@ -16,35 +16,35 @@
 #include "vesa_internal.h"
 
 bool canvas_module_gbl;
-// GLOBAL: TIE 0xFBBF4
+// GLOBAL: TIE95 0xFBBF4
 bool diff_exists_gbl;
-// GLOBAL: TIE 0xFBBFA
+// GLOBAL: TIE95 0xFBBFA
 bool diff_used_gbl;
 bool diff_valid_gbl;
 BitmapStruct screen_bm_gbl;
 BitmapStruct diff_bm_gbl;
 BitmapStruct buff_bm_gbl;
 BitmapStruct* canvas_bm_gbl;
-// GLOBAL: TIE 0xFBBC8
+// GLOBAL: TIE95 0xFBBC8
 BitmapStruct* draw_bm_gbl;
 
-// GLOBAL: TIE 0xFBB9C
+// GLOBAL: TIE95 0xFBB9C
 void* buff_gbl;
-// GLOBAL: TIE 0xFBBE4
+// GLOBAL: TIE95 0xFBBE4
 void* draw_buff_gbl;
-// GLOBAL: TIE 0xFBBE8
+// GLOBAL: TIE95 0xFBBE8
 int16_t buff_size_gbl;
 int16_t canvas_stack_size_gbl;
-// GLOBAL: TIE 0xFBBF6
+// GLOBAL: TIE95 0xFBBF6
 int16_t draw_w_gbl;
 int16_t draw_h_gbl;
-// GLOBAL: TIE 0xFBBF2
+// GLOBAL: TIE95 0xFBBF2
 int16_t clip_left_gbl;
-// GLOBAL: TIE 0xFBBEA
+// GLOBAL: TIE95 0xFBBEA
 int16_t clip_top_gbl;
-// GLOBAL: TIE 0xFBBEC
+// GLOBAL: TIE95 0xFBBEC
 int16_t clip_right_gbl;
-// GLOBAL: TIE 0xFBBEE
+// GLOBAL: TIE95 0xFBBEE
 int16_t clip_bottom_gbl;
 BitmapStruct* canvas_stack_bm_gbl[LANDRU_CANVAS_STACK_CAPACITY];
 

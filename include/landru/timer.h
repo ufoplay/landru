@@ -34,8 +34,6 @@ int32_t xtimer_Time_Elapsed(void);
  * Setting it rebases the sample and clears its residual; zero selects 4000 us. */
 void xtimer_Set_Elapsed_Period_Us(uint32_t period_us);
 uint32_t xtimer_Elapsed_Period_Us(void);
-/* Remaining delay without consuming the flight elapsed sampler. */
-uint64_t xtimer_Elapsed_Delay_Us(uint32_t ticks);
 void xtimer_Set_FrameRatePreset(int32_t preset);
 #endif
 
@@ -53,8 +51,6 @@ void xtimer_Destroy_Timer_Interrupt(void);
  * returns 0 to mark the frame as begun. */
 int xtimer_Frame_Budget_Pending(void);
 void xtimer_Commit_Frame(void);
-/* Remaining synthetic-clock delay to the current scheduled frame deadline. */
-uint64_t xtimer_Next_Frame_Delay_Us(void);
 
 /* Clamped progress through the current scheduled frame, or zero when idle. */
 float xtimer_Frame_Progress(void);

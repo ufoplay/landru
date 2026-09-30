@@ -10,9 +10,9 @@
 
 #include "host_internal.h"
 
-// GLOBAL: TIE 0xD2C28
+// GLOBAL: TIE95 0xD2C28
 static Sound* first_sound_gbl = NULL;
-// GLOBAL: TIE 0xD2C2C
+// GLOBAL: TIE95 0xD2C2C
 static SoundActionFunc sound_func = NULL;
 
 Sound* xsound_Ask_Sound_List(void) { return first_sound_gbl; }

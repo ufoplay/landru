@@ -23,23 +23,23 @@ static int32_t input_res_buffer[64];
 static uint8_t input_str_buffer[256];
 
 /* Module globals */
-// GLOBAL: TIE 0xFC10C
+// GLOBAL: TIE95 0xFC10C
 InputType* input_type_gbl = NULL;
-// GLOBAL: TIE 0xFC104
+// GLOBAL: TIE95 0xFC104
 Input* input_list_gbl = NULL;
 #endif
 #ifndef LANDRU_GAME_XW
-// GLOBAL: TIE 0xFC108
+// GLOBAL: TIE95 0xFC108
 Input* active_input_list_gbl = NULL;
 #endif
-// GLOBAL: TIE 0xD3008
+// GLOBAL: TIE95 0xD3008
 bool input_module_gbl = false;
 #ifndef LANDRU_GAME_XW
-// GLOBAL: TIE 0xFC0FC
+// GLOBAL: TIE95 0xFC0FC
 Rect input_frame_gbl;
-// GLOBAL: TIE 0xFC110
+// GLOBAL: TIE95 0xFC110
 bool refresh_inputs_gbl = false;
-// GLOBAL: TIE 0xFC114
+// GLOBAL: TIE95 0xFC114
 int16_t zinput_build_gbl = 0;
 #endif
 
